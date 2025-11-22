@@ -134,7 +134,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->group(functi
     Route::get('/loans/history', [LoanController::class, 'history'])->name('mahasiswa.loans.history');
     Route::get('/loans/recommendations', [LoanController::class, 'recommendations'])->name('mahasiswa.loans.recommendations');
 
-    Route::resource('/reservations', ReservationController::class);
+    // Route::resource('/reservations', ReservationController::class);
 
     // Detail buku mahasiswa (dipindah ke sini agar konsisten)
     Route::get('/books/{id}', [BookController::class, 'show'])->name('mahasiswa.books.show');
@@ -143,6 +143,38 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->group(functi
     Route::get('/loans/{loan}/review', [ReviewController::class, 'create'])->name('loans.review');
     Route::post('/loans/{loan}/review', [ReviewController::class, 'store'])->name('loans.review.store');
 });
+
+
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::resource('books', BookController::class);
+    });
+Route::middleware(['auth', 'role:pegawai'])
+    ->prefix('pegawai')
+    ->name('pegawai.')
+    ->group(function () {
+        Route::resource('books', BookController::class);
+    });
+
+    // Route::post('/reservations', [ReservationController::class, 'store'])
+    // ->middleware(['auth', 'role:mahasiswa'])
+    // ->name('reservations.store');
+
+Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->group(function () {
+    Route::get('/reservations', [\App\Http\Controllers\ReservationController::class, 'index'])
+        ->name('mahasiswa.reservations.index');
+
+    Route::post('/reservations', [\App\Http\Controllers\ReservationController::class, 'store'])
+        ->name('mahasiswa.reservations.store');  // pastikan nama route ini sama dengan yang di form
+});
+
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/analytics', [App\Http\Controllers\AdminController::class, 'analytics'])->name('admin.analytics');
+});
+
 
 /*
 |--------------------------------------------------------------------------

@@ -5,7 +5,10 @@
 @section('content')
 <div class="mb-4">
     <p>Halo, {{ $user->name }} ({{ $user->role }}) | 
-        <a href="{{ route('logout') }}">Logout</a>
+        <form action="{{ route('logout') }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" class="text-blue-600 hover:underline">Logout</button>
+        </form>
     </p>
 </div>
 
@@ -34,15 +37,8 @@
                 @foreach ($activeLoans as $loan)
                 <tr>
                     <td class="border p-2">{{ $loan->book->title }}</td>
-
-                    <td class="border p-2">
-                        {{ $loan->loan_date ? $loan->loan_date->format('d-m-Y') : 'N/A' }}
-                    </td>
-
-                    <td class="border p-2">
-                        {{ $loan->due_date ? $loan->due_date->format('d-m-Y') : 'N/A' }}
-                    </td>
-
+                    <td class="border p-2">{{ $loan->loan_date ? $loan->loan_date->format('d-m-Y') : 'N/A' }}</td>
+                    <td class="border p-2">{{ $loan->due_date ? $loan->due_date->format('d-m-Y') : 'N/A' }}</td>
                     <td class="border p-2">
                         @if ($loan->fine_amount > 0)
                             <span class="text-red-600 font-bold">
@@ -52,15 +48,11 @@
                             <span class="text-green-600">On Time</span>
                         @endif
                     </td>
-
                     <td class="border p-2">
                         @if (!$loan->is_extended && now()->lt($loan->due_date))
-                            <form method="POST" 
-                                  action="{{ route('mahasiswa.loans.extend', $loan->id) }}" 
-                                  class="inline">
+                            <form method="POST" action="{{ route('mahasiswa.loans.extend', $loan->id) }}" class="inline">
                                 @csrf
-                                <button type="submit"
-                                        class="bg-blue-600 text-white px-3 py-1 rounded">
+                                <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded">
                                     Perpanjang
                                 </button>
                             </form>
@@ -88,14 +80,12 @@
             @foreach ($loanHistory as $loan)
                 <li class="mb-2">
                     {{ $loan->book->title }} — 
-                    Dipinjam: {{ $loan->loan_date ? $loan->loan_date->format('d-m-Y') : 'N/A' }},
-                    Dikembalikan: 
-                    {{ $loan->return_date ? $loan->return_date->format('d-m-Y') : 'Belum dikembalikan' }}
+                    Dipinjam: {{ $loan->loan_date ? $loan->loan_date->format('d-m-Y') : 'N/A' }}, 
+                    Dikembalikan: {{ $loan->return_date ? $loan->return_date->format('d-m-Y') : 'Belum dikembalikan' }}
 
                     @if ($loan->return_date)
                         @if (!$loan->review)
-                            <a href="{{ route('loans.review', $loan->id) }}" 
-                               class="text-blue-600 hover:underline ml-2">
+                            <a href="{{ route('loans.review', $loan->id) }}" class="text-blue-600 hover:underline ml-2">
                                 Berikan Ulasan
                             </a>
                         @else
@@ -109,15 +99,40 @@
 </section>
 
 {{-- =======================
-        DENDA
+    RESERVASI TERBARU (RINGKASAN)
+======================= --}}
+<section class="mb-8">
+    <h2 class="text-xl font-semibold mb-2">Reservasi Terbaru</h2>
+
+    @if (isset($reservations) && $reservations->isEmpty())
+        <p>Anda belum memiliki reservasi.</p>
+    @elseif(isset($reservations))
+        <ul>
+            @foreach ($reservations as $res)
+                <li class="mb-1">
+                    {{ $res->book->title }} — 
+                    {{ $res->reserved_at->format('d M Y H:i') }} — 
+                    Status: {{ ucfirst($res->status) }}
+                </li>
+            @endforeach
+        </ul>
+        <a href="{{ route('mahasiswa.reservations.index') }}" class="text-blue-600 hover:underline mt-2 inline-block">
+            Lihat semua reservasi
+        </a>
+    @else
+        <p><em>Data reservasi tidak tersedia.</em></p>
+    @endif
+</section>
+
+{{-- =======================
+    DENDA
 ======================= --}}
 <section class="mb-8">
     <h2 class="text-xl font-semibold mb-2">Status Denda</h2>
 
     @if ($totalFine > 0)
         <p class="text-red-600 font-bold">
-            Anda memiliki denda tertunggak sebesar 
-            Rp {{ number_format($totalFine, 0, ',', '.') }}.
+            Anda memiliki denda tertunggak sebesar Rp {{ number_format($totalFine, 0, ',', '.') }}.
         </p>
         <p class="text-sm text-gray-600">
             Peminjaman baru akan diblokir hingga denda dilunasi.
@@ -140,9 +155,7 @@
             @foreach ($notifications as $notification)
                 <li>
                     {{ $notification->data['message'] ?? $notification->message }}
-                    <small class="text-gray-500">
-                        ({{ $notification->created_at->diffForHumans() }})
-                    </small>
+                    <small class="text-gray-500">({{ $notification->created_at->diffForHumans() }})</small>
                 </li>
             @endforeach
         </ul>
@@ -162,8 +175,7 @@
                 <p>Penulis: {{ $book->author }}</p>
                 <p>Kategori: {{ $book->category }}</p>
                 <p>Rating: {{ $book->average_rating ?? 'Belum ada' }}/5</p>
-                <a href="{{ route('mahasiswa.books.show', $book->id) }}" 
-                   class="text-blue-600 hover:underline">Detail Buku</a>
+                <a href="{{ route('mahasiswa.books.show', $book->id) }}" class="text-blue-600 hover:underline">Detail Buku</a>
             </div>
         @endforeach
     </div>
@@ -174,12 +186,7 @@
 ======================= --}}
 <section class="mb-8">
     <h2 class="text-xl font-semibold mb-2">Profil & Pengaturan Akun</h2>
-    <a href="{{ route('profile.edit') }}" class="text-blue-600 hover:underline mr-4">
-        Edit Profil
-    </a>
-    <a href="{{ route('password.change') }}" class="text-blue-600 hover:underline">
-        Ganti Password
-    </a>
+    <a href="{{ route('profile.edit') }}" class="text-blue-600 hover:underline mr-4">Edit Profil</a>
+    <a href="{{ route('password.change') }}" class="text-blue-600 hover:underline">Ganti Password</a>
 </section>
-
 @endsection

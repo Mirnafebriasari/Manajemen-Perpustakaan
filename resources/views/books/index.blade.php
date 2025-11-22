@@ -6,9 +6,31 @@
 <h1 class="text-3xl font-bold mb-4">Katalog Buku</h1>
 
 {{-- ================================
-    FORM FILTER & SORT
-================================= --}}
-<form method="GET" action="{{ route('books.index') }}" class="mb-4 max-w-lg flex gap-2 flex-wrap">
+    AUTO SELECT ROUTE INDEX SESUAI ROLE
+================================ --}}
+@php
+    if (auth()->check()) {
+        if (auth()->user()->hasRole('admin')) {
+            $indexRoute = 'admin.books.index';
+        } elseif (auth()->user()->hasRole('pegawai')) {
+            $indexRoute = 'pegawai.books.index';
+        } elseif (auth()->user()->hasRole('mahasiswa')) {
+            $indexRoute = 'mahasiswa.books.index';
+        } else {
+            $indexRoute = 'books.index';
+        }
+    } else {
+        $indexRoute = 'books.index'; // guest
+    }
+@endphp
+
+
+{{-- ================================
+        FORM FILTER
+================================ --}}
+<form method="GET" action="{{ route($indexRoute) }}"
+      class="mb-4 max-w-lg flex gap-2 flex-wrap">
+
     <input 
         type="text" 
         name="search" 
@@ -38,31 +60,33 @@
     <button class="bg-blue-600 text-white px-4 py-2 rounded">Filter</button>
 </form>
 
+
 {{-- ================================
-    GRID LIST BUKU
-================================= --}}
+        GRID LIST BUKU
+================================ --}}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
 @foreach ($books as $book)
 
-    {{-- Tentukan route detail berdasarkan role --}}
     @php
+        // route detail otomatis berdasarkan role
         if (auth()->check()) {
             if (auth()->user()->hasRole('admin')) {
-                $routeName = 'admin.books.show';
+                $showRoute = 'admin.books.show';
             } elseif (auth()->user()->hasRole('pegawai')) {
-                $routeName = 'pegawai.books.show';
+                $showRoute = 'pegawai.books.show';
             } elseif (auth()->user()->hasRole('mahasiswa')) {
-                $routeName = 'mahasiswa.books.show';
+                $showRoute = 'mahasiswa.books.show';
             } else {
-                $routeName = 'books.show';
+                $showRoute = 'books.show';
             }
         } else {
-            $routeName = 'books.show'; // guest
+            $showRoute = 'books.show'; // guest
         }
     @endphp
 
     <div class="border p-4 rounded shadow">
+
         <h2 class="font-bold text-xl">{{ $book->title }}</h2>
         <p>Penulis: {{ $book->author }}</p>
         <p>Kategori: {{ $book->category }}</p>
@@ -70,26 +94,35 @@
         <p>Tahun: {{ $book->publication_year }}</p>
         <p>Rating: {{ number_format($book->rating ?? 0, 1) }}</p>
 
-        <a href="{{ route($routeName, $book->id) }}" 
+        <a href="{{ route($showRoute, $book->id) }}" 
            class="text-blue-600 hover:underline mt-2 inline-block">
-           Detail Buku
+            Detail Buku
         </a>
 
+
         {{-- ================================
-            TOMBOL EDIT & DELETE 
+            TOMBOL EDIT & DELETE
             HANYA ADMIN & PEGAWAI
         ================================= --}}
         @if(auth()->check() && auth()->user()->hasAnyRole(['admin', 'pegawai']))
-            <div class="flex gap-2 mt-3">
 
-                {{-- Tombol Edit --}}
-                <a href="{{ route('books.edit', $book->id) }}" 
+            @php
+                if (auth()->user()->hasRole('admin')) {
+                    $editRoute = route('admin.books.edit', $book->id);
+                    $deleteRoute = route('admin.books.destroy', $book->id);
+                } else {
+                    $editRoute = route('pegawai.books.edit', $book->id);
+                    $deleteRoute = route('pegawai.books.destroy', $book->id);
+                }
+            @endphp
+
+            <div class="flex gap-2 mt-3">
+                <a href="{{ $editRoute }}" 
                    class="px-3 py-1 bg-yellow-500 text-white rounded">
-                   Edit
+                    Edit
                 </a>
 
-                {{-- Tombol Delete --}}
-                <form action="{{ route('books.destroy', $book->id) }}" method="POST"
+                <form action="{{ $deleteRoute }}" method="POST"
                       onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
                     @csrf
                     @method('DELETE')
@@ -97,8 +130,8 @@
                         Hapus
                     </button>
                 </form>
-
             </div>
+
         @endif
 
     </div>
@@ -107,9 +140,10 @@
 
 </div>
 
+
 {{-- ================================
-    PAGINATION
-================================= --}}
+        PAGINATION
+================================ --}}
 <div class="mt-6">
     {{ $books->withQueryString()->links() }}
 </div>

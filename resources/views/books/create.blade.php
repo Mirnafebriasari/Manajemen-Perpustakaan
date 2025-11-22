@@ -5,7 +5,7 @@
 @section('content')
 <h1 class="text-2xl font-bold mb-4">Tambah Buku</h1>
 
-<form action="{{ route('books.store') }}" method="POST" class="max-w-lg">
+<form action="{{ route('pegawai.books.store') }}" method="POST" class="max-w-lg">
     @csrf
 
     <label class="block mb-2">Judul Buku</label>

@@ -13,8 +13,23 @@
 
 <div class="mb-4">
     <h2 class="text-xl font-semibold mb-2">Kelola Koleksi Buku</h2>
-    <a href="{{ route('books.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded">Tambah Buku Baru</a>
-    <a href="{{ route('pegawai.books.index') }}" class="ml-4 bg-blue-600 text-white px-4 py-2 rounded">Daftar Buku</a>
+
+    @php
+        // Tentukan route tambah buku berdasarkan role
+        if (auth()->user()->hasRole('admin')) {
+            $createRoute = 'admin.books.create';
+        } else {
+            $createRoute = 'pegawai.books.create';
+        }
+    @endphp
+
+    <a href="{{ route($createRoute) }}" class="bg-indigo-600 text-white px-4 py-2 rounded">
+        Tambah Buku Baru
+    </a>
+
+    <a href="{{ route('pegawai.books.index') }}" class="ml-4 bg-blue-600 text-white px-4 py-2 rounded">
+        Daftar Buku
+    </a>
 </div>
 
 {{-- Notifikasi Pegawai --}}

@@ -13,6 +13,10 @@ class Reservation extends Model
         'status',
     ];
 
+    protected $casts = [
+        'reserved_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
