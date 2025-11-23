@@ -41,9 +41,8 @@
     PINJAM BUKU / RESERVASI
 ================================ --}}
 @auth
-    @if(auth()->user()->role === 'mahasiswa')
+    @if(auth()->user()->hasRole('mahasiswa'))
 
-        {{-- PINJAM jika stok masih ada --}}
         @if($book->stock > 0)
             <form action="{{ route('mahasiswa.loans.store') }}" method="POST" class="mt-4 max-w-xs">
                 @csrf
@@ -53,8 +52,6 @@
                     Pinjam Buku
                 </button>
             </form>
-
-        {{-- RESERVASI jika stok habis --}}
         @else
             <p class="text-red-600 font-semibold mt-4">Stok buku habis.</p>
 
@@ -81,6 +78,7 @@
             @endif
 
         @endif
+
     @endif
 @endauth
 

@@ -26,6 +26,7 @@ Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show')
 
 require __DIR__.'/auth.php';
 
+
 /*
 |--------------------------------------------------------------------------
 | AUTHENTICATED (SEMUA ROLE)
@@ -38,25 +39,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         if ($user->hasRole('admin')) {
             return redirect()->route('admin.dashboard');
-        } elseif ($user->hasRole('pegawai')) {
+        }
+
+        if ($user->hasRole('pegawai')) {
             return redirect()->route('pegawai.dashboard');
-        } else {
+        }
+
+        if ($user->hasRole('mahasiswa')) {
             return redirect()->route('mahasiswa.dashboard');
         }
+
+        abort(403, 'User does not have the right roles.');
     })->name('dashboard');
 
-    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Change password
     Route::get('/password/change', [ProfileController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('/password/change', [ProfileController::class, 'changePassword'])->name('password.update');
 
-    // Reviews
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -134,7 +139,6 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->group(functi
     Route::get('/loans/history', [LoanController::class, 'history'])->name('mahasiswa.loans.history');
     Route::get('/loans/recommendations', [LoanController::class, 'recommendations'])->name('mahasiswa.loans.recommendations');
 
-    // Route::resource('/reservations', ReservationController::class);
 
     // Detail buku mahasiswa (dipindah ke sini agar konsisten)
     Route::get('/books/{id}', [BookController::class, 'show'])->name('mahasiswa.books.show');
@@ -175,6 +179,27 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/analytics', [App\Http\Controllers\AdminController::class, 'analytics'])->name('admin.analytics');
 });
 
+
+Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->group(function () {
+
+    // halaman form pinjam
+    Route::get('/loans/create', [PegawaiController::class, 'createLoan'])
+        ->name('pegawai.loans.create');
+
+ 
+
+});
+
+
+
+
+Route::prefix('mahasiswa')
+    ->name('mahasiswa.')
+    ->middleware(['auth', 'role:mahasiswa']) // middleware opsional, sesuaikan
+    ->group(function () {
+        Route::get('/books', [BookController::class, 'index'])->name('books.index');
+        // route lain untuk mahasiswa...
+    });
 
 /*
 |--------------------------------------------------------------------------

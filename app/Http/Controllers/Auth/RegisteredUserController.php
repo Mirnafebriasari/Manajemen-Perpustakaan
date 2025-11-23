@@ -45,13 +45,12 @@ public function store(Request $request): RedirectResponse
         'email.regex' => 'Email harus berasal dari domain universitas.',
     ]);
 
-    // Buat user baru
     $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role' => 'mahasiswa', // simpan juga di kolom role kalau perlu
-    ]);
+    'name' => $request->name,
+    'email' => $request->email,
+    'password' => Hash::make($request->password),
+]);
+
 
     // Assign role 'mahasiswa' ke user lewat Spatie Permission
     $user->assignRole('mahasiswa');

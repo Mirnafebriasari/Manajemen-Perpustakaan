@@ -16,9 +16,10 @@ class RoleMiddleware
      */
   public function handle(Request $request, Closure $next, ...$roles)
 {
-    if (!in_array($request->user()->role, $roles)) {
-        abort(403, 'Unauthorized');
-    }
+    if (!$request->user()->hasAnyRole($roles)) {
+    abort(403, 'Unauthorized');
+}
+
     return $next($request);
 }
 
