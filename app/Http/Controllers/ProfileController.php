@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -25,18 +26,30 @@ public function edit(Request $request)
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
+    public function update(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'current_password' => 'required',
+    ]);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    // Cek apakah password saat ini benar
+    if (! Hash::check($request->current_password, auth()->user()->password)) {
+        return back()->withErrors([
+            'current_password' => 'Password saat ini tidak sesuai.',
+        ]);
     }
+
+    // Update
+    $user = auth()->user();
+    $user->update([
+        'name' => $request->name,
+        'email' => $request->email,
+    ]);
+
+    return back()->with('status', 'Profil berhasil diperbarui.');
+}
 
     /**
      * Delete the user's account.

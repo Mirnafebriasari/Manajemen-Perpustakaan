@@ -16,7 +16,7 @@
 
     <form method="POST" action="{{ route('profile.update') }}">
         @csrf
-        @method('PUT')
+        @method('PATCH')
 
         {{-- Nama --}}
         <div class="mb-4">
@@ -46,27 +46,18 @@
             @enderror
         </div>
 
-        {{-- Password Baru --}}
+        {{-- Password saat ini (konfirmasi) --}}
         <div class="mb-4">
-            <label class="block font-semibold mb-1">Password Baru (opsional)</label>
+            <label class="block font-semibold mb-1">Password Saat Ini</label>
             <input 
                 type="password" 
-                name="password" 
+                name="current_password" 
                 class="border p-2 w-full rounded"
+                required
             >
-            @error('password')
+            @error('current_password')
             <p class="text-red-600 text-sm">{{ $message }}</p>
             @enderror
-        </div>
-
-        {{-- Konfirmasi Password --}}
-        <div class="mb-4">
-            <label class="block font-semibold mb-1">Konfirmasi Password Baru</label>
-            <input 
-                type="password" 
-                name="password_confirmation" 
-                class="border p-2 w-full rounded"
-            >
         </div>
 
         <button 

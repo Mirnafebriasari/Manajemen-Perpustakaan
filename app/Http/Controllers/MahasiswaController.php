@@ -13,16 +13,16 @@ class MahasiswaController extends Controller
     {
         $user = Auth::user();
 
-        $activeLoans = Loan::with('book')
-            ->where('user_id', $user->id)
-            ->whereNull('returned_at')  // ubah di sini
-            ->get();
+      $activeLoans = Loan::with('book')
+    ->where('user_id', $user->id)
+    ->whereNull('return_date')   // perbaikan
+    ->get();
 
-        $loanHistory = Loan::with('book')
-            ->where('user_id', $user->id)
-            ->whereNotNull('returned_at')  // ubah di sini
-            ->orderBy('returned_at', 'desc')  // ubah di sini
-            ->get();
+$loanHistory = Loan::with('book')
+    ->where('user_id', $user->id)
+    ->whereNotNull('return_date')   // perbaikan
+    ->orderBy('return_date', 'desc')  // perbaikan
+    ->get();
 
         $totalFine = $activeLoans->sum(fn($loan) => $loan->fine_amount ?? 0);
 

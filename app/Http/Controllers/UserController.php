@@ -21,6 +21,12 @@ class UserController extends Controller
           $user = null;
         return view('users.form', compact('user'));
     }
+public function edit($id)
+{
+    $user = User::findOrFail($id);
+   return view('users.form', compact('user'));
+
+}
 
    public function store(Request $request)
 {
