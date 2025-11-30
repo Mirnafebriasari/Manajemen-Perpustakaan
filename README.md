@@ -69,7 +69,7 @@ Aplikasi Manajemen Perpustakaan Digital ini dirancang untuk mengelola koleksi bu
 
 1.  **Clone Repositori:**
     ```bash
-    git clone [https://github.com/Mirnafebriasari/Manajemen-Perpustakaan.git](https://github.com/Mirnafebriasari/Manajemen-Perpustakaan.git)
+    git clone https://github.com/Mirnafebriasari/Manajemen-Perpustakaan.git
     ```
 
 2.  **Masuk ke Direktori Proyek:**
