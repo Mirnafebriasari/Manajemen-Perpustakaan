@@ -29,12 +29,31 @@ class LoanController extends Controller
 
 public function store(Request $request)
 {
+        $user = auth()->user();
+
+    $hasUnpaidFines = Loan::where('user_id', $user->id)
+        ->where('fine_amount', '>', 0)
+        ->whereIn('status', ['late', 'borrowed'])
+        ->exists();
+
+    if ($hasUnpaidFines) {
+        return back()->withErrors(['error' => 'Anda tidak dapat meminjam buku baru karena memiliki denda tertunggak. Silakan lunasi terlebih dahulu.']);
+    }
+
     $request->validate([
         'book_id' => 'required|exists:books,id',
         'quantity' => 'required|integer|min:1|max:10',
     ]);
 
     $book = Book::findOrFail($request->book_id);
+    $existingLoan = Loan::where('user_id', auth()->id())
+        ->where('book_id', $book->id)
+        ->whereIn('status', ['borrowed', 'renewed'])
+        ->first();
+
+    if ($existingLoan) {
+        return back()->withErrors(['book_id' => 'Anda sudah meminjam buku ini dan belum mengembalikannya.'])->withInput();
+    }
 
     if ($request->quantity > $book->stock) {
         return back()->withErrors(['quantity' => 'Jumlah pinjam melebihi stok yang tersedia'])->withInput();
@@ -63,7 +82,7 @@ public function store(Request $request)
     } elseif ($user->hasRole('pegawai')) {
         return redirect()->route('loans.index')->with('success', 'Buku berhasil dipinjam');
     } else {
-        return redirect()->route('mahasiswa.loans.index')->with('success', 'Buku berhasil dipinjam');
+        return redirect()->route('books.show', $book->id)->with('success', 'Buku berhasil dipinjam');
     }
 }
 
@@ -98,34 +117,41 @@ public function store(Request $request)
 }
 
 
-    public function renew(Request $request, Loan $loan)
-    {
-        if ($loan->user_id !== Auth::id()) {
-            return back()->withErrors('Akses ditolak.');
-        }
-
-        if ($loan->status !== 'borrowed' || now()->greaterThan($loan->due_date)) {
-            return back()->withErrors('Tidak bisa diperpanjang karena sudah terlambat atau dikembalikan.');
-        }
-
-        $loan->due_date = $loan->due_date->addDays($loan->book->max_loan_days);
-        $loan->save();
-        $loan->user->notify(new LoanNotification($loan, 'renewed'));
-        return back()->with('success', 'Peminjaman berhasil diperpanjang.');
+   public function renew(Request $request, Loan $loan)
+{
+    if ($loan->user_id !== Auth::id()) {
+        return back()->withErrors('Akses ditolak.');
     }
 
-    public function extend(Request $request, Loan $loan)
-    {
-        if ($loan->return_date !== null) {
-            return redirect()->back()->with('error', 'Loan sudah dikembalikan.');
-        }
-
-        $loan->due_date = $loan->due_date->addDays(7); 
-        $loan->is_extended = true;
-        $loan->save();
-
-        return redirect()->back()->with('success', 'Loan berhasil diperpanjang.');
+    if ($loan->status !== 'borrowed') {
+        return back()->withErrors('Tidak bisa diperpanjang karena status peminjaman bukan aktif.');
     }
+
+    if (now()->greaterThan($loan->due_date)) {
+        return back()->withErrors('Tidak bisa diperpanjang karena sudah melewati tanggal jatuh tempo.');
+    }
+    if ($loan->extension_count >= 2) {
+        return back()->withErrors('Masa perpanjangan sudah mencapai batas maksimal.');
+    }
+    $loan->due_date = $loan->due_date->addDays($loan->book->max_loan_days);
+    $loan->extension_count = ($loan->extension_count ?? 0) + 1;
+    $loan->save();
+    $loan->user->notify(new LoanNotification($loan, 'renewed'));
+    return back()->with('success', 'Peminjaman berhasil diperpanjang selama ' . $loan->book->max_loan_days . ' hari.');
+}
+
+  public function extend(Request $request, Loan $loan)
+{
+    if ($loan->return_date !== null) {
+        return redirect()->back()->with('error', 'Loan sudah dikembalikan.');
+    }
+
+    $loan->due_date = $loan->due_date->addDays($loan->book->max_loan_days); 
+    $loan->is_extended = true;
+    $loan->save();
+
+    return redirect()->back()->with('success', 'Loan berhasil diperpanjang.');
+}
 
     public function sendDueReminders()
     {
@@ -155,6 +181,7 @@ public function store(Request $request)
     app(\App\Http\Controllers\ReservationController::class)->processReservation($book);
     return back()->with('success', 'Buku berhasil dikembalikan.');
 }
+
 public function destroy(Loan $loan)
 {
     $user = auth()->user();

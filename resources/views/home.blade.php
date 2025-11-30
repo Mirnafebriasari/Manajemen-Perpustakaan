@@ -58,8 +58,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach ($searchResults as $book)
                         <div class="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 overflow-hidden group border border-white/20 hover:bg-white/15">
-                            <div class="h-48 bg-gradient-to-br from-indigo-500/80 to-purple-600/80 backdrop-blur-sm flex items-center justify-center">
-                                <span class="text-white font-bold text-2xl">{{ substr($book->title, 0, 1) }}</span>
+                            <div class="h-56 relative overflow-hidden rounded-t-xl">
+                                @if($book->photo)
+                                    <img src="{{ asset('storage/book_photos/' . $book->photo) }}" alt="Cover {{ $book->title }}" class="object-cover object-center w-full h-full group-hover:scale-105 transition-transform duration-300" />
+                                @else
+                                    <div class="h-56 bg-gradient-to-br from-indigo-500/80 to-purple-600/80 flex items-center justify-center">
+                                        <span class="text-white font-bold text-5xl">{{ substr($book->title, 0, 1) }}</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="p-6">
                                 <h3 class="text-xl font-bold text-white mb-2 group-hover:text-yellow-300 transition-colors drop-shadow-lg">
@@ -91,8 +97,14 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach ($latestBooks ?? [] as $book)
                     <div class="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 overflow-hidden group transform hover:-translate-y-2 border border-white/20 hover:bg-white/15">
-                        <div class="h-40 bg-gradient-to-br from-gray-500/80 to-cyan-600/80 backdrop-blur-sm flex items-center justify-center">
-                            <span class="text-white font-bold text-xl">{{ substr($book->title, 0, 1) }}</span>
+                        <div class="h-56 relative overflow-hidden rounded-t-xl">
+                            @if($book->photo)
+                                <img src="{{ asset('storage/book_photos/' . $book->photo) }}" alt="Cover {{ $book->title }}" class="object-cover object-center w-full h-full group-hover:scale-105 transition-transform duration-300" />
+                            @else
+                                <div class="h-56 bg-gradient-to-br from-gray-500/80 to-cyan-600/80 flex items-center justify-center">
+                                    <span class="text-white font-bold text-5xl">{{ substr($book->title, 0, 1) }}</span>
+                                </div>
+                            @endif
                         </div>
                         <div class="p-5">
                             <h3 class="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors line-clamp-2 drop-shadow-lg">
@@ -121,8 +133,14 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach ($popularBooks ?? [] as $book)
                     <div class="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 overflow-hidden group transform hover:-translate-y-2 border border-white/20 hover:bg-white/15">
-                        <div class="h-40 bg-gradient-to-br from-orange-500/80 to-red-600/80 backdrop-blur-sm flex items-center justify-center">
-                            <span class="text-white font-bold text-xl">{{ substr($book->title, 0, 1) }}</span>
+                        <div class="h-56 relative overflow-hidden rounded-t-xl">
+                            @if($book->photo)
+                                <img src="{{ asset('storage/book_photos/' . $book->photo) }}" alt="Cover {{ $book->title }}" class="object-cover object-center w-full h-full group-hover:scale-105 transition-transform duration-300" />
+                            @else
+                                <div class="h-56 bg-gradient-to-br from-orange-500/80 to-red-600/80 flex items-center justify-center">
+                                    <span class="text-white font-bold text-5xl">{{ substr($book->title, 0, 1) }}</span>
+                                </div>
+                            @endif
                         </div>
                         <div class="p-5">
                             <h3 class="text-lg font-bold text-white mb-2 group-hover:text-orange-300 transition-colors line-clamp-2 drop-shadow-lg">
@@ -153,8 +171,14 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach($personalizedRecommendations as $book)
                     <div class="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 overflow-hidden group transform hover:-translate-y-2 border border-white/20 hover:bg-white/15">
-                        <div class="h-40 bg-gradient-to-br from-purple-500/80 to-pink-600/80 backdrop-blur-sm flex items-center justify-center">
-                            <span class="text-white font-bold text-xl">{{ substr($book->title, 0, 1) }}</span>
+                        <div class="h-56 relative overflow-hidden rounded-t-xl">
+                            @if($book->photo)
+                                <img src="{{ asset('storage/book_photos/' . $book->photo) }}" alt="Cover {{ $book->title }}" class="object-cover object-center w-full h-full group-hover:scale-105 transition-transform duration-300" />
+                            @else
+                                <div class="h-56 bg-gradient-to-br from-purple-500/80 to-pink-600/80 flex items-center justify-center">
+                                    <span class="text-white font-bold text-5xl">{{ substr($book->title, 0, 1) }}</span>
+                                </div>
+                            @endif
                         </div>
                         <div class="p-5">
                             <h3 class="text-lg font-bold text-white mb-2 group-hover:text-pink-300 transition-colors line-clamp-2 drop-shadow-lg">

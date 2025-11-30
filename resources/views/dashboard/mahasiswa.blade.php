@@ -20,7 +20,7 @@
                 </div>
                 <a href="{{ route('books.index') }}" 
                    class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition duration-200 shadow-md inline-flex items-center">
-                    Katalog Buku
+                    Pinjam Buku
                 </a>
             </div>
         </div>
@@ -74,50 +74,62 @@
                             </a>
                         </div>
                     @else
-                        <div class="overflow-x-auto">
-                            <table class="w-full table-auto border-collapse border border-gray-200">
-                                <thead>
-                                    <tr class="bg-gray-50 border-b border-gray-200">
-                                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 border border-gray-200">Judul Buku</th>
-                                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 border border-gray-200">Tanggal Pinjam</th>
-                                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 border border-gray-200">Jatuh Tempo</th>
-                                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 border border-gray-200">Status</th>
-                                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 border border-gray-200">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($activeLoans as $loan)
-                                        <tr class="hover:bg-gray-50 transition">
-                                            <td class="px-4 py-3 font-medium text-gray-800 border border-gray-200">{{ $loan->book->title }}</td>
-                                            <td class="px-4 py-3 text-gray-600 border border-gray-200">{{ $loan->loan_date ? $loan->loan_date->format('d M Y') : 'N/A' }}</td>
-                                            <td class="px-4 py-3 text-gray-600 border border-gray-200">{{ $loan->due_date ? $loan->due_date->format('d M Y') : 'N/A' }}</td>
-                                            <td class="px-4 py-3 border border-gray-200">
-                                                @if ($loan->fine_amount > 0)
-                                                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">
-                                                        Denda Rp {{ number_format($loan->fine_amount, 0, ',', '.') }}
-                                                    </span>
-                                                @else
-                                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
-                                                        Tepat Waktu
-                                                    </span>
-                                                @endif
-                                            </td>
-                                            <td class="px-4 py-3 border border-gray-200">
-                                                @if (!$loan->is_extended && now()->lt($loan->due_date))
-                                                    <form method="POST" action="{{ route('mahasiswa.loans.extend', $loan->id) }}" class="inline">
-                                                        @csrf
-                                                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-200">
-                                                            Perpanjang
-                                                        </button>
-                                                    </form>
-                                                @else
-                                                    <span class="text-gray-400">-</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        <div class="space-y-4">
+                            @foreach ($activeLoans as $loan)
+                                <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition duration-200">
+                                    <div class="flex gap-4 p-4">
+                                        <!-- Foto Buku dengan style katalog -->
+                                        <div class="flex-shrink-0">
+                                            <div class="h-40 w-28 overflow-hidden rounded-lg shadow-md">
+                                              <img src="{{ $loan->book->photo ? asset('storage/book_photos/' . $loan->book->photo) : asset('images/book-placeholder.png') }}" 
+                                                     alt="Cover {{ $loan->book->title }}"
+                                                     class="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+                                                     onerror="this.src='{{ asset('images/book-placeholder.png') }}'">
+                                            </div>
+                                        </div>
+
+                                        <!-- Info Buku -->
+                                        <div class="flex-grow">
+                                            <div class="mb-2">
+                                                <span class="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold">
+                                                    {{ $loan->book->category }}
+                                                </span>
+                                            </div>
+                                            <h3 class="font-bold text-lg text-gray-800 mb-2">{{ $loan->book->title }}</h3>
+                                            <p class="text-sm text-gray-600 mb-1">Penulis: {{ $loan->book->author }}</p>
+                                            <div class="text-sm text-gray-600 space-y-1">
+                                                <p><span class="font-semibold">Tanggal Pinjam:</span> {{ $loan->loan_date ? $loan->loan_date->format('d M Y') : 'N/A' }}</p>
+                                                <p><span class="font-semibold">Jatuh Tempo:</span> {{ $loan->due_date ? $loan->due_date->format('d M Y') : 'N/A' }}</p>
+                                            </div>
+                                            
+                                            <div class="mt-3 flex items-center justify-between">
+                                                <div>
+                                                    @if ($loan->fine_amount > 0)
+                                                        <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">
+                                                            Denda Rp {{ number_format($loan->fine_amount, 0, ',', '.') }}
+                                                        </span>
+                                                    @else
+                                                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                                                            Tepat Waktu
+                                                        </span>
+                                                    @endif
+                                                </div>
+
+                                                <div>
+                                                    @if (!$loan->is_extended && now()->lt($loan->due_date))
+                                                        <form method="POST" action="{{ route('mahasiswa.loans.extend', $loan->id) }}" class="inline">
+                                                            @csrf
+                                                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-200">
+                                                                Perpanjang
+                                                            </button>
+                                                        </form>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     @endif
                 </div>
@@ -138,34 +150,55 @@
                     @else
                         <div class="space-y-3">
                             @foreach ($loanHistory as $loan)
-                                <div class="border rounded-lg p-4 flex justify-between items-center">
-                                    <div>
-                                        <h3 class="font-semibold text-gray-800">{{ $loan->book->title }}</h3>
-                                        <div class="text-sm text-gray-600 mt-1">
-                                            <p>Dipinjam: {{ $loan->loan_date ? $loan->loan_date->format('d M Y') : 'N/A' }}</p>
-                                            <p>Dikembalikan: {{ $loan->return_date ? $loan->return_date->format('d M Y') : 'Belum dikembalikan' }}</p>
+                                <div class="border rounded-lg overflow-hidden">
+                                    <div class="flex gap-4 p-4">
+                                        <!-- Foto Buku -->
+                                        <div class="flex-shrink-0">
+                                            <div class="h-32 w-24 overflow-hidden rounded-lg shadow-md">
+                                                <img src="{{ $loan->book->photo ? asset('storage/book_photos/' . $loan->book->photo) : asset('images/book-placeholder.png') }}"
+                                                     alt="Cover {{ $loan->book->title }}"
+                                                     class="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+                                                     onerror="this.src='{{ asset('images/book-placeholder.png') }}'">
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="flex space-x-2 items-center">
-                                        @if ($loan->return_date)
-                                            @if (!$loan->review)
-                                                <a href="{{ route('loans.review', $loan->id) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-200">
-                                                    Beri Ulasan
-                                                </a>
-                                            @else
-                                                <span class="text-green-600 text-sm font-semibold">Sudah diulas</span>
-                                            @endif
-                                        @endif
+                                        <!-- Info & Aksi -->
+                                        <div class="flex-grow flex justify-between items-start">
+                                            <div>
+                                                <div class="mb-2">
+                                                    <span class="inline-block px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-semibold">
+                                                        {{ $loan->book->category }}
+                                                    </span>
+                                                </div>
+                                                <h3 class="font-semibold text-gray-800 mb-1">{{ $loan->book->title }}</h3>
+                                                <p class="text-sm text-gray-600 mb-2">{{ $loan->book->author }}</p>
+                                                <div class="text-sm text-gray-600">
+                                                    <p>Dipinjam: {{ $loan->loan_date ? $loan->loan_date->format('d M Y') : 'N/A' }}</p>
+                                                    <p>Dikembalikan: {{ $loan->return_date ? $loan->return_date->format('d M Y') : 'Belum dikembalikan' }}</p>
+                                                </div>
+                                            </div>
 
-                                        <!-- Tombol Hapus -->
-                                        <form action="{{ route('loans.destroy', $loan->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus riwayat peminjaman ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-200">
-                                                Hapus
-                                            </button>
-                                        </form>
+                                            <div class="flex flex-col space-y-2">
+                                                @if ($loan->return_date)
+                                                    @if (!$loan->review)
+                                                        <a href="{{ route('loans.review', $loan->id) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-200 text-center">
+                                                            Beri Ulasan
+                                                        </a>
+                                                    @else
+                                                        <span class="text-green-600 text-sm font-semibold text-center">Sudah diulas</span>
+                                                    @endif
+                                                @endif
+
+                                                <!-- Tombol Hapus -->
+                                                <form action="{{ route('loans.destroy', $loan->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus riwayat peminjaman ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-200">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach
@@ -183,17 +216,37 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach ($recommendations as $book)
-                            <div class="bg-indigo-50 rounded-lg p-4 hover:shadow-md transition duration-200 border border-indigo-100">
-                                <h3 class="font-bold text-lg text-gray-800 mb-2">{{ $book->title }}</h3>
-                                <p class="text-sm text-gray-600 mb-1">Penulis: {{ $book->author }}</p>
-                                <p class="text-sm text-gray-600 mb-1">Kategori: {{ $book->category }}</p>
-                                <div class="flex items-center justify-between mt-3">
-                                    <span class="text-yellow-600 font-semibold">
-                                        Rating: {{ $book->average_rating ?? 'Belum ada' }}/5
+                            <div class="bg-white rounded-lg border border-indigo-100 overflow-hidden hover:shadow-lg transition duration-200">
+                                <!-- Cover Image dengan style katalog -->
+                                <div class="h-48 w-full overflow-hidden">
+                                    <img src="{{ $book->photo ? asset('storage/book_photos/' . $book->photo) : asset('images/book-placeholder.png') }}"
+                                         alt="Cover {{ $book->title }}"
+                                         class="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+                                         onerror="this.src='{{ asset('images/book-placeholder.png') }}'">
+                                </div>
+
+                                <!-- Header dengan gradient -->
+                                <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 text-white">
+                                    <span class="inline-block px-2 py-1 bg-white bg-opacity-30 rounded text-xs font-semibold mb-1">
+                                        {{ $book->category }}
                                     </span>
-                                    <a href="{{ route('mahasiswa.books.show', $book->id) }}" class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-200">
-                                        Detail
-                                    </a>
+                                    <h3 class="font-bold text-base leading-tight line-clamp-2">{{ $book->title }}</h3>
+                                </div>
+
+                                <!-- Info Buku -->
+                                <div class="p-3">
+                                    <p class="text-sm text-gray-600 mb-1">{{ $book->author }}</p>
+                                    <div class="flex items-center justify-between mt-2">
+                                        <span class="text-yellow-600 font-semibold text-sm flex items-center">
+                                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            </svg>
+                                            {{ $book->average_rating ?? 'N/A' }}/5
+                                        </span>
+                                        <a href="{{ route('mahasiswa.books.show', $book->id) }}" class="bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1 rounded-lg text-xs font-semibold transition duration-200">
+                                            Detail
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach

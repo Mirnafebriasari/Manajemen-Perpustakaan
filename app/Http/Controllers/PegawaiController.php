@@ -21,14 +21,6 @@ class PegawaiController extends Controller
     }
     
 
-    public function createLoan()
-    {
-        $books = Book::where('status', 'available')->get();
-        $borrowers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'mahasiswa');
-            })->get();
-        return view('loans.create', compact('books', 'borrowers'));
-    }
     public function markAllAsRead()
     {
         Auth::user()->unreadNotifications->markAsRead();       

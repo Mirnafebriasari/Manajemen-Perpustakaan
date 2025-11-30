@@ -1,66 +1,120 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Manajemen Perpustakaan Digital
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi Manajemen Perpustakaan Digital ini dirancang untuk mengelola koleksi buku, pengguna, dan transaksi peminjaman secara efisien melalui sistem berbasis role untuk Admin, Pegawai, Mahasiswa, dan Guest. Fitur utama meliputi pengelolaan data pengguna dan buku, proses peminjaman dan pengembalian dengan perhitungan denda otomatis, notifikasi sistem, rekomendasi buku, serta ulasan dari mahasiswa. Antarmuka mencakup katalog buku, halaman detail, dan dashboard khusus sesuai peran pengguna. Sistem juga dapat dikembangkan dengan fitur reservasi buku dan analitik laporan untuk kebutuhan perpustakaan yang lebih modern dan informatif.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Rincian Alur Aplikasi
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. **Login / Registrasi**  
+   - Admin login menggunakan akun yang diberikan.
+   - Akun Pegawai dibuat dan dikelola oleh Admin melalui menu Manajemen Pengguna.
+   - Mahasiswa dapat mendaftar menggunakan email universitas lalu login.  
+   - Guest dapat langsung mengakses katalog tanpa login.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+2. **Akses Dashboard Berdasarkan Role**  
+   - **Admin:** Kelola pengguna, kelola buku, dan pantau seluruh aktivitas perpustakaan.  
+   - **Pegawai:** Konfirmasi peminjaman/pengembalian buku dan mengelola stok.  
+   - **Mahasiswa:** Melihat katalog, meminjam, memperpanjang, melihat riwayat, mengulas buku, dan memantau denda.  
+   - **Guest:** Hanya dapat melihat katalog dan rekomendasi umum.
 
-## Learning Laravel
+3. **Manajemen Pengguna (Admin)**  
+   - Tambah, edit, dan hapus pengguna (pegawai & mahasiswa).  
+   - Atur role dan validasi data pengguna.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+4. **Manajemen Buku (Admin & Pegawai)**  
+   - Tambah koleksi buku baru lengkap dengan detail (judul, penulis, stok, denda, dll).  
+   - Edit atau hapus buku yang sudah tidak digunakan.  
+   - Cek stok dan ketersediaan buku.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+5. **Peminjaman Buku (Mahasiswa)**  
+   - Cari buku melalui katalog atau fitur pencarian.  
+   - Buka detail buku dan tekan tombol **“Pinjam Buku”** jika stok tersedia.  
+   - Sistem mencatat transaksi dan mengirim notifikasi konfirmasi.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+6. **Pengembalian & Denda (Pegawai)**  
+   - Pegawai mengonfirmasi pengembalian.  
+   - Sistem otomatis menghitung denda jika terlambat.  
+   - Mahasiswa wajib melunasi agar bisa meminjam kembali.
 
-## Laravel Sponsors
+7. **Perpanjangan Peminjaman (Mahasiswa)**  
+   - Dapat memperpanjang selama belum lewat tanggal jatuh tempo.  
+   - Sistem memperbarui tanggal pengembalian dan mengirim notifikasi.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+8. **Notifikasi Sistem**  
+   - Mahasiswa menerima pengingat jatuh tempo, pemberitahuan denda, dan konfirmasi transaksi.  
+   - Pegawai dapat melihat log notifikasi yang dikirimkan.
 
-### Premium Partners
+9. **Review & Rekomendasi Buku (Mahasiswa)**  
+   - Berikan rating dan komentar untuk buku yang telah dipinjam.  
+   - Sistem menampilkan rekomendasi buku yang relevan dan populer.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+10. **Fitur Opsional (Jika diaktifkan)**  
+    - Reservasi Buku: Mahasiswa dapat memesan buku yang sedang dipinjam orang lain.  
+    - Analitik & Laporan: Admin dapat melihat grafik peminjaman dan data statistik perpustakaan.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Teknologi dan Alat yang Digunakan
 
-## Code of Conduct
+- **XAMPP** — Server lokal yang menyediakan Apache, PHP, dan MySQL untuk menjalankan aplikasi.  
+- **Composer** — Dependency manager untuk menginstal dan mengelola paket Laravel.  
+- **Laravel** — Framework utama untuk pengembangan backend, routing, autentikasi, dan manajemen data.  
+- **Visual Studio Code (VS Code)** — Code editor utama untuk menulis dan mengelola proyek.  
+- **GitHub** — Platform untuk penyimpanan kode, version control, dan kolaborasi.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+### Langkah-Langkah
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1.  **Clone Repositori:**
+    ```bash
+    git clone [https://github.com/Mirnafebriasari/Manajemen-Perpustakaan.git](https://github.com/Mirnafebriasari/Manajemen-Perpustakaan.git)
+    ```
 
-## License
+2.  **Masuk ke Direktori Proyek:**
+    ```bash
+    cd Manajemen-Perpustakaan
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3.  **Instal Dependensi Laravel:**
+    ```bash
+    composer install
+    ```
+
+4.  **Buka XAMPP lalu start MySQL**
+5.  **Masuk ke VS Code lalu buka terminal dan jalankan migrasi dan seeder database:**
+    ```bash
+    php artisan migrate --seed
+    ```
+6.  **Jalankan Server Aplikasi:**
+    ```bash
+    php artisan serve
+    ```
+7. **Jalankan Vite pada terminal lain:**
+    ```bash
+    npm run dev
+    ```
+8. **Jalankan symlink untuk menghubungkan folder penyimpanan file pribadi ke folder yang dapat diakses publik oleh browser. :**
+    ```bash
+    php artisan storage:link
+    ```
+    *Akses aplikasi di:* `http://127.0.0.1:8000/`
+
+**Catatan Penting Mengenai Akses**
+Setelah menjalankan perintah php artisan migrate --seed, Anda dapat mengakses sistem dengan kredensial berikut:
+1. Akun Admin Utama: Gunakan kredensial yang telah diatur dalam file database/seeders/AdminSeeder.php. Akun ini adalah kunci utama untuk mengelola seluruh sistem perpustakaan.
+2. Akun Mahasiswa: Selain menggunakan akun Admin, pengguna dapat langsung melakukan registrasi di halaman register untuk membuat akun Mahasiswa dan mulai menjelajahi fungsionalitas pengguna.
+    
+
+---
+
+## Alur Penggunaan Berdasarkan Role
+
+| Role | Fungsionalitas Utama |
+| :--- | :--- |
+| **Admin** | Kelola Pengguna, Kelola Buku, Pantau Aktivitas. |
+| **Pegawai** | Konfirmasi Peminjaman/Pengembalian, Kelola Stok Buku. |
+| **Mahasiswa** | Pinjam Buku, Perpanjang, Ulas Buku, Cek Denda. |
+
+---

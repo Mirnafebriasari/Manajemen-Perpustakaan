@@ -14,7 +14,7 @@
 
         <!-- Form Card -->
         <div class="bg-white rounded-2xl shadow-xl p-8">
-            <form action="{{ $formAction }}" method="POST">
+            <form action="{{ $formAction }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- Informasi Buku Section -->
@@ -30,9 +30,13 @@
                             </label>
                             <input type="text" 
                                    name="title" 
-                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none" 
+                                   value="{{ old('title') }}"
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none @error('title') border-red-500 @enderror" 
                                    placeholder="Masukkan judul buku"
                                    required>
+                            @error('title')
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -42,9 +46,13 @@
                                 </label>
                                 <input type="text" 
                                        name="author" 
-                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none" 
+                                       value="{{ old('author') }}"
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none @error('author') border-red-500 @enderror" 
                                        placeholder="Nama penulis"
                                        required>
+                                @error('author')
+                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div>
@@ -53,9 +61,13 @@
                                 </label>
                                 <input type="text" 
                                        name="publisher" 
-                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none" 
+                                       value="{{ old('publisher') }}"
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none @error('publisher') border-red-500 @enderror" 
                                        placeholder="Nama penerbit"
                                        required>
+                                @error('publisher')
+                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
@@ -66,9 +78,13 @@
                                 </label>
                                 <input type="number" 
                                        name="publication_year" 
-                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none" 
+                                       value="{{ old('publication_year') }}"
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none @error('publication_year') border-red-500 @enderror" 
                                        placeholder="2024"
                                        required>
+                                @error('publication_year')
+                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div>
@@ -77,9 +93,13 @@
                                 </label>
                                 <input type="text" 
                                        name="category" 
-                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none" 
+                                       value="{{ old('category') }}"
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none @error('category') border-red-500 @enderror" 
                                        placeholder="Fiksi, Non-Fiksi, dll"
                                        required>
+                                @error('category')
+                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
@@ -89,8 +109,25 @@
                             </label>
                             <textarea name="description" 
                                       rows="4" 
-                                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none resize-none" 
-                                      placeholder="Deskripsi singkat tentang buku..."></textarea>
+                                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none resize-none @error('description') border-red-500 @enderror" 
+                                      placeholder="Deskripsi singkat tentang buku...">{{ old('description') }}</textarea>
+                            @error('description')
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Upload Foto Buku -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Foto Buku
+                            </label>
+                            <input type="file" 
+                                   name="photo" 
+                                   accept="image/*"
+                                   class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none @error('photo') border-red-500 @enderror" />
+                            @error('photo')
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -108,9 +145,13 @@
                             </label>
                             <input type="number" 
                                    name="stock" 
-                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none" 
+                                   value="{{ old('stock') }}"
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none @error('stock') border-red-500 @enderror" 
                                    placeholder="0"
                                    required>
+                            @error('stock')
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
@@ -119,9 +160,13 @@
                             </label>
                             <input type="number" 
                                    name="max_loan_days" 
-                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none" 
+                                   value="{{ old('max_loan_days') }}"
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none @error('max_loan_days') border-red-500 @enderror" 
                                    placeholder="7"
                                    required>
+                            @error('max_loan_days')
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
@@ -130,9 +175,13 @@
                             </label>
                             <input type="number" 
                                    name="fine_per_day" 
-                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none" 
+                                   value="{{ old('fine_per_day') }}"
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none @error('fine_per_day') border-red-500 @enderror" 
                                    placeholder="5000"
                                    required>
+                            @error('fine_per_day')
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>

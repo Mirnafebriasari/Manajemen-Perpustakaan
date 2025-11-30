@@ -17,9 +17,17 @@ class Book extends Model
         'fine_per_day',
         'description',
         'status',
-         'rating',
+        'rating',
+        'photo', 
     ];
-    
+
+    protected $casts = [
+        'publication_year' => 'integer',
+        'stock' => 'integer',
+        'max_loan_days' => 'integer',
+        'fine_per_day' => 'decimal:2',
+        'rating' => 'float',
+    ];
 
     public function loans()
     {

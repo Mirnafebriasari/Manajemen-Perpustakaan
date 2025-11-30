@@ -24,7 +24,7 @@
 
     @if($reservations->isEmpty())
         <!-- Empty State -->
-        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg p-12 text-center border border-blue-100 dark:border-gray-700">
+        <div class="bg-gradient-to-br from-orange-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg p-12 text-center border border-orange-100 dark:border-gray-700">
             <div class="mb-6 text-8xl text-gray-300 dark:text-gray-600">
                 ∅
             </div>
@@ -35,7 +35,7 @@
                 Anda belum memiliki reservasi buku saat ini. Mulai jelajahi koleksi kami dan reservasi buku favorit Anda!
             </p>
             <a href="{{ route('books.index') }}" 
-               class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
+               class="inline-block px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
                 Jelajahi Buku
             </a>
         </div>

@@ -12,11 +12,11 @@
             : route('pegawai.books.update', $book->id);
     @endphp
 
-    <form action="{{ $updateRoute }}" method="POST" class="space-y-6 bg-white p-6 rounded-lg shadow-md">
+    <form action="{{ $updateRoute }}" method="POST" enctype="multipart/form-data" class="space-y-6 bg-white p-6 rounded-lg shadow-md">
         @csrf
         @method('PUT')
 
-        {{-- Form fields tetap sama --}}
+        {{-- Judul Buku --}}
         <div>
             <label for="title" class="block mb-2 font-semibold text-gray-700">Judul Buku</label>
             <input 
@@ -32,6 +32,7 @@
             @enderror
         </div>
 
+        {{-- Penulis --}}
         <div>
             <label for="author" class="block mb-2 font-semibold text-gray-700">Penulis</label>
             <input 
@@ -47,6 +48,7 @@
             @enderror
         </div>
 
+        {{-- Penerbit --}}
         <div>
             <label for="publisher" class="block mb-2 font-semibold text-gray-700">Penerbit</label>
             <input 
@@ -61,6 +63,7 @@
             @enderror
         </div>
 
+        {{-- Tahun Terbit --}}
         <div>
             <label for="publication_year" class="block mb-2 font-semibold text-gray-700">Tahun Terbit</label>
             <input 
@@ -76,6 +79,7 @@
             @enderror
         </div>
 
+        {{-- Kategori --}}
         <div>
             <label for="category" class="block mb-2 font-semibold text-gray-700">Kategori</label>
             <input 
@@ -90,6 +94,7 @@
             @enderror
         </div>
 
+        {{-- Jumlah Stok --}}
         <div>
             <label for="stock" class="block mb-2 font-semibold text-gray-700">Jumlah Stok</label>
             <input 
@@ -106,6 +111,7 @@
             @enderror
         </div>
 
+        {{-- Maksimal Waktu Pinjam --}}
         <div>
             <label for="max_loan_days" class="block mb-2 font-semibold text-gray-700">Maksimal Waktu Pinjam (hari)</label>
             <input 
@@ -122,6 +128,7 @@
             @enderror
         </div>
 
+        {{-- Denda per Hari --}}
         <div>
             <label for="fine_per_day" class="block mb-2 font-semibold text-gray-700">Denda per Hari</label>
             <input 
@@ -138,6 +145,7 @@
             @enderror
         </div>
 
+        {{-- Deskripsi --}}
         <div>
             <label for="description" class="block mb-2 font-semibold text-gray-700">Deskripsi</label>
             <textarea 
@@ -149,6 +157,29 @@
             @error('description')
                 <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
             @enderror
+        </div>
+
+        {{-- Foto Cover Lama (Preview) --}}
+       @if ($book->photo)
+<div>
+    <label class="block mb-2 font-semibold text-gray-700">Foto Cover Saat Ini</label>
+    <img src="{{ $book->photo ? asset('storage/book_photos/' . $book->photo) : asset('images/book-placeholder.png') }}">
+</div>
+@endif
+{{-- Upload Foto Cover Baru --}}
+    <div>
+    <label for="photo" class="block mb-2 font-semibold text-gray-700">Ganti Foto Cover</label>
+    <input 
+        id="photo" 
+        type="file" 
+        name="photo" 
+        accept="image/*"
+        class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+    >
+        @error('photo')
+        <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+        @enderror
+        <p class="text-sm text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti foto cover.</p>
         </div>
 
         {{-- Tombol Simpan --}}

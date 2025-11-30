@@ -3,167 +3,258 @@
 @section('title', 'Dashboard Pegawai')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-10">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div class="container mx-auto px-4 py-12 max-w-7xl">
 
-        <div class="mb-10 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10 border-t-8 border-orange-500">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-800 dark:text-white mb-2 tracking-tight">
-                <i class="fas fa-chart-line mr-3 text-orange-500"></i> Dashboard Pegawai
-            </h1>
-            <p class="text-lg text-gray-600 dark:text-gray-400">
-                Selamat datang di pusat kendali, <span class="font-bold text-orange-600 dark:text-orange-400">{{ auth()->user()->name }}</span>.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 transition duration-500 ease-in-out transform hover:scale-[1.02] border-l-4 border-orange-500">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Total Peminjaman</p>
-                        <p class="text-5xl font-extrabold text-orange-600 dark:text-orange-400">
-                            {{ \App\Models\Loan::count() }}
-                        </p>
+        {{-- Modern Hero Header --}}
+        <div class="relative mb-16">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 rounded-3xl blur-3xl"></div>
+            <div class="relative bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/50 p-10 overflow-hidden">
+                {{-- Decorative Elements --}}
+                <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-pink-500/20 to-orange-500/20 rounded-full blur-3xl"></div>
+                
+                <div class="relative flex items-center justify-between">
+                    <div class="flex items-center space-x-6">
+                        <div class="flex items-center justify-center w-20 h-20 bg-gradient-to-tr from-blue-600 via-purple-600 to-pink-600 rounded-2xl shadow-2xl transform rotate-6 hover:rotate-12 transition-transform duration-500">
+                            <svg class="w-10 h-10 text-white -rotate-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-5xl font-black mb-2">
+                                <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                    Dashboard Pegawai
+                                </span>
+                            </h1>
+                            <p class="text-lg text-gray-600">
+                                Selamat datang kembali, 
+                                <span class="font-bold text-blue-600">{{ auth()->user()->name }}</span>
+                            </p>
+                        </div>
                     </div>
-                    <div class="bg-orange-100 dark:bg-orange-900 rounded-xl p-3">
-                        <i class="fas fa-book-reader fa-2x text-orange-500 dark:text-orange-300"></i>
+                    
+                    {{-- Current Time Widget --}}
+                    <div class="hidden lg:block text-right">
+                        <div class="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl px-6 py-3">
+                            <p class="text-sm font-bold text-gray-600 uppercase tracking-wide">{{ now()->format('l') }}</p>
+                            <p class="text-2xl font-black text-blue-600">{{ now()->format('d M Y') }}</p>
+                        </div>
                     </div>
                 </div>
-                <p class="text-xs text-gray-400 dark:text-gray-600 mt-4">Keseluruhan transaksi peminjaman.</p>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 transition duration-500 ease-in-out transform hover:scale-[1.02] border-l-4 border-green-500">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Total Buku</p>
-                        <p class="text-5xl font-extrabold text-green-600 dark:text-green-400">
-                            {{ \App\Models\Book::count() }}
-                        </p>
-                    </div>
-                    <div class="bg-green-100 dark:bg-green-900 rounded-xl p-3">
-                        <i class="fas fa-book fa-2x text-green-500 dark:text-green-300"></i>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-400 dark:text-gray-600 mt-4">Keseluruhan koleksi buku perpustakaan.</p>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 transition duration-500 ease-in-out transform hover:scale-[1.02] border-l-4 border-yellow-500">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Notifikasi Baru</p>
-                        <p class="text-5xl font-extrabold text-yellow-600 dark:text-yellow-400">
-                            {{ $notifications->count() }}
-                        </p>
-                    </div>
-                    <div class="bg-yellow-100 dark:bg-yellow-900 rounded-xl p-3">
-                        <i class="fas fa-bell fa-2x text-yellow-500 dark:text-yellow-300"></i>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-400 dark:text-gray-600 mt-4">Pemberitahuan penting yang belum dibaca.</p>
             </div>
         </div>
 
-        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">Aksi Cepat</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
-
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 transition duration-300 hover:shadow-2xl">
-                <div class="flex items-center mb-4">
-                    <div class="bg-green-100 dark:bg-green-900 rounded-full p-3 mr-4">
-                        <i class="fas fa-exchange-alt fa-lg text-green-600 dark:text-green-400"></i>
+        {{-- Modern Stats Cards --}}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+            {{-- Total Peminjaman --}}
+            <div class="group relative">
+                <div class="absolute -inset-1 bg-gradient-to-r from-orange-600 to-pink-600 rounded-3xl opacity-20 group-hover:opacity-30 blur-xl transition-all duration-500"></div>
+                <div class="relative bg-white rounded-3xl shadow-xl p-8 transform group-hover:-translate-y-2 transition-all duration-500 border border-gray-100">
+                    <div class="flex items-start justify-between mb-6">
+                        <div>
+                            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Total Peminjaman</p>
+                            <p class="text-5xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                                {{ \App\Models\Loan::count() }}
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-100 to-pink-100 rounded-2xl">
+                            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 dark:text-white">Manajemen Peminjaman</h3>
-                </div>
-                <p class="text-gray-600 dark:text-gray-400 mb-5 text-sm">Kelola peminjaman dan pengembalian buku.</p>
-                <div class="space-y-3">
-                    <a href="{{ url('/pegawai/loans/create') }}"
-                        class="block w-full text-center py-3 rounded-xl font-semibold bg-green-500 text-white hover:bg-green-600 transition duration-200 shadow-md shadow-green-300/50">
-                        Buat Peminjaman Baru
-                    </a>
-                    <a href="{{ url('/pegawai/loans') }}"
-                        class="block w-full text-center py-3 rounded-xl font-semibold bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition duration-200">
-                        Lihat Daftar Peminjaman
-                    </a>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 transition duration-300 hover:shadow-2xl">
-                <div class="flex items-center mb-4">
-                    <div class="bg-orange-100 dark:bg-orange-900 rounded-full p-3 mr-4">
-                        <i class="fas fa-warehouse fa-lg text-orange-600 dark:text-orange-400"></i>
+            {{-- Total Buku --}}
+            <div class="group relative">
+                <div class="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl opacity-20 group-hover:opacity-30 blur-xl transition-all duration-500"></div>
+                <div class="relative bg-white rounded-3xl shadow-xl p-8 transform group-hover:-translate-y-2 transition-all duration-500 border border-gray-100">
+                    <div class="flex items-start justify-between mb-6">
+                        <div>
+                            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Total Buku</p>
+                            <p class="text-5xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                                {{ \App\Models\Book::count() }}
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+                            </svg>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 dark:text-white">Kelola Koleksi Buku</h3>
-                </div>
-                <p class="text-gray-600 dark:text-gray-400 mb-5 text-sm">Tambah, ubah, dan kelola data koleksi buku.</p>
-                <div class="space-y-3">
-                    <a href="{{ route('pegawai.books.create') }}"
-                        class="block w-full text-center py-3 rounded-xl font-semibold bg-orange-500 text-white hover:bg-orange-600 transition duration-200 shadow-md shadow-orange-300/50">
-                        Tambah Buku Baru
-                    </a>
-                    <a href="{{ route('pegawai.books.index') }}"
-                        class="block w-full text-center py-3 rounded-xl font-semibold bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition duration-200">
-                        Lihat Daftar Buku
-                    </a>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 flex flex-col items-center justify-center transition duration-300 hover:shadow-2xl">
-                <div class="text-center mb-5">
-                    <div class="bg-purple-100 dark:bg-purple-900 rounded-full p-4 mx-auto w-16 h-16 flex items-center justify-center mb-4">
-                        <i class="fas fa-calendar-check fa-2x text-purple-600 dark:text-purple-400"></i>
+            {{-- Notifikasi --}}
+            <div class="group relative">
+                <div class="absolute -inset-1 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-3xl opacity-20 group-hover:opacity-30 blur-xl transition-all duration-500"></div>
+                <div class="relative bg-white rounded-3xl shadow-xl p-8 transform group-hover:-translate-y-2 transition-all duration-500 border border-gray-100">
+                    <div class="flex items-start justify-between mb-6">
+                        <div>
+                            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Notifikasi Baru</p>
+                            <p class="text-5xl font-black bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                                {{ $notifications->count() }}
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-2xl">
+                            <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Reservasi Buku</h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm">Lihat daftar reservasi buku.</p>
                 </div>
-                <a href="{{ url('/pegawai/reservations') }}"
-                    class="block w-full text-center py-3 rounded-xl font-extrabold bg-purple-500 text-white hover:bg-purple-600 transition duration-200 shadow-lg shadow-purple-400/50 transform hover:scale-[1.03]">
-                    Daftar Reservasi
-                </a>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8">
-            <div class="mb-6 flex items-center justify-between border-b pb-4 dark:border-gray-700">
-                <div class="flex items-center">
-                    <div class="bg-yellow-100 dark:bg-yellow-900 rounded-full p-3 mr-4">
-                        <i class="fas fa-exclamation-triangle fa-lg text-yellow-600 dark:text-yellow-400"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Notifikasi Sistem</h2>
-                </div>
-                @if($notifications->isNotEmpty())
-                <form action="{{ route('pegawai.notifications.markAllAsRead') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="text-sm text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-semibold transition duration-200">
-                        Tandai Semua Dibaca
-                    </button>
-                </form>
-                @endif
-            </div>
-
-            <div class="space-y-4">
-                @forelse($notifications as $notif)
-                    <div class="bg-gray-50 dark:bg-gray-700 border-l-4 border-orange-500 rounded-xl p-5 transition duration-300 hover:shadow-lg">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <i class="fas fa-info-circle fa-lg text-orange-500"></i>
+        {{-- Quick Actions Section --}}
+       
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {{-- Manajemen Peminjaman --}}
+                <div class="group relative">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-3xl opacity-20 group-hover:opacity-30 blur-xl transition-all duration-500"></div>
+                    <div class="relative bg-white rounded-3xl shadow-xl p-8 border border-gray-100 transform group-hover:-translate-y-1 transition-all duration-500 flex flex-col min-h-[300px]">
+                        <div class="flex items-start mb-6 flex-1">
+                            <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-2xl mr-5 flex-shrink-0">
+                                <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                </svg>
                             </div>
-                            <div class="flex-1 ml-4">
-                                <p class="text-gray-800 dark:text-white font-semibold text-base mb-1">{{ $notif->data['message'] ?? 'Notifikasi Tanpa Pesan' }}</p>
-                                <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                    <i class="far fa-clock mr-1"></i>
-                                    <span>{{ $notif->created_at->diffForHumans() }}</span>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-black text-gray-900 mb-2">Manajemen Peminjaman</h3>
+                                <p class="text-gray-600 leading-relaxed">Kelola peminjaman dan pengembalian buku dengan sistem yang efisien</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <a href="{{ url('/pegawai/loans') }}"
+                               class="group/btn relative overflow-hidden px-6 py-4 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 rounded-2xl font-bold text-gray-800 text-center transition-all duration-300 shadow-md hover:shadow-lg">
+                                <span class="relative flex items-center justify-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                    Daftar Pinjaman
+                                </span>
+                            </a>
+                            <a href="{{ url('/pegawai/reservations') }}"
+                               class="group/btn relative overflow-hidden px-6 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-2xl font-bold text-white text-center transition-all duration-300 shadow-lg hover:shadow-xl">
+                                <span class="relative flex items-center justify-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    Reservasi
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Kelola Buku --}}
+                <div class="group relative">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-orange-600 to-pink-600 rounded-3xl opacity-20 group-hover:opacity-30 blur-xl transition-all duration-500"></div>
+                    <div class="relative bg-white rounded-3xl shadow-xl p-8 border border-gray-100 transform group-hover:-translate-y-1 transition-all duration-500 flex flex-col min-h-[300px]">
+                        <div class="flex items-start mb-6 flex-1">
+                            <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-100 to-pink-100 rounded-2xl mr-5 flex-shrink-0">
+                                <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-black text-gray-900 mb-2">Kelola Koleksi Buku</h3>
+                                <p class="text-gray-600 leading-relaxed">Tambah, edit, dan kelola data buku perpustakaan</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <a href="{{ route('pegawai.books.create') }}"
+                               class="group/btn relative overflow-hidden px-6 py-4 bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-700 hover:to-pink-700 rounded-2xl font-bold text-white text-center transition-all duration-300 shadow-lg hover:shadow-xl">
+                                <span class="relative flex items-center justify-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                    </svg>
+                                    Tambah Buku
+                                </span>
+                            </a>
+                            <a href="{{ route('pegawai.books.index') }}"
+                               class="group/btn relative overflow-hidden px-6 py-4 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 rounded-2xl font-bold text-gray-800 text-center transition-all duration-300 shadow-md hover:shadow-lg">
+                                <span class="relative flex items-center justify-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                                    </svg>
+                                    Daftar Buku
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Notifikasi Modern --}}
+        <div class="relative">
+            <div class="absolute -inset-1 bg-gradient-to-r from-yellow-600/20 to-orange-600/20 rounded-3xl blur-2xl"></div>
+            <div class="relative bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/50 p-8">
+                <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-200">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-2xl">
+                            <svg class="w-7 h-7 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-3xl font-black text-gray-900">Notifikasi Sistem</h2>
+                    </div>
+                    @if($notifications->isNotEmpty())
+                        <form action="{{ route('pegawai.notifications.markAllAsRead') }}" method="POST">
+                            @csrf
+                            <button type="submit" 
+                                class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                                Tandai Semua Dibaca
+                            </button>
+                        </form>
+                    @endif
+                </div>
+
+                <div class="space-y-4 max-h-96 overflow-y-auto pr-2">
+                    @forelse($notifications as $notif)
+                        <div class="group relative">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-orange-600/20 to-pink-600/20 rounded-2xl opacity-0 group-hover:opacity-100 blur transition-all duration-300"></div>
+                            <div class="relative bg-gradient-to-r from-orange-50 to-pink-50 border-l-4 border-orange-500 rounded-2xl p-6 transition-all duration-300 hover:shadow-lg">
+                                <div class="flex items-start space-x-4">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-gray-900 font-bold text-base mb-2">{{ $notif->data['message'] ?? 'Notifikasi Tanpa Pesan' }}</p>
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            <span class="font-medium">{{ $notif->created_at->diffForHumans() }}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @empty
-                    <div class="text-center py-16 bg-gray-100 dark:bg-gray-700 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
-                        <i class="fas fa-inbox fa-3x text-gray-300 dark:text-gray-500 mx-auto mb-4"></i>
-                        <p class="text-gray-600 dark:text-gray-300 text-xl font-semibold mb-2">Tidak ada notifikasi baru</p>
-                        <p class="text-gray-400 dark:text-gray-500 text-sm">Semua pemberitahuan penting akan muncul di sini.</p>
-                    </div>
-                @endforelse
+                    @empty
+                        <div class="text-center py-20 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-200">
+                            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl mb-6">
+                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                                </svg>
+                            </div>
+                            <p class="text-gray-900 text-xl font-black mb-2">Tidak Ada Notifikasi</p>
+                            <p class="text-gray-500 text-sm">Semua pemberitahuan penting akan muncul di sini</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
         </div>
+
     </div>
 </div>
 @endsection

@@ -32,8 +32,8 @@
                     <h2 class="text-xl font-semibold text-gray-900">Tren Peminjaman</h2>
                     <p class="text-sm text-gray-500 mt-1">Statistik peminjaman per bulan</p>
                 </div>
-                <div class="p-3 bg-blue-100 rounded-xl">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-3 bg-orange-100 rounded-xl">
+                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
                     </svg>
                 </div>
@@ -68,7 +68,7 @@
         
         <!-- Loans Table -->
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div class="px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-600">
+            <div class="px-6 py-4 bg-gradient-to-r from-orange-500 to-orange-600">
                 <h2 class="text-xl font-semibold text-white flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -89,8 +89,8 @@
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="flex-shrink-0 h-10 w-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                             </svg>
                                         </div>
@@ -100,7 +100,7 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
                                         {{ $item->total }} transaksi
                                     </span>
                                 </td>

@@ -107,7 +107,7 @@
                         Login
                     </a>
                     <a href="{{ route('register') }}" 
-                       class="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-500 text-black font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg">
+                       class="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-500 text-black font-semibold rounded-lg hover:from-orange-600 hover:to-orange-600 transition-all duration-300 shadow-lg">
                         Register
                     </a>
                 @endauth

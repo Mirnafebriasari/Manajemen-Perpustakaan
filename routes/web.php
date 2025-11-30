@@ -97,7 +97,6 @@ Route::middleware(['auth', 'role:admin|pegawai'])->prefix('pegawai')->group(func
 
 Route::prefix('pegawai')->middleware(['auth', 'role:pegawai'])->group(function () {
     Route::get('/dashboard', [PegawaiController::class, 'dashboard'])->name('pegawai.dashboard');
-    Route::get('/loans/create', [PegawaiController::class, 'createLoan'])->name('loans.create');  // Adjust controller/method as needed
 });
 
 Route::middleware(['auth', 'role:pegawai|admin'])->prefix('pegawai')->name('pegawai.')->group(function () {
@@ -171,20 +170,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 });
 
 
-Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->group(function () {
-    Route::get('/loans/create', [PegawaiController::class, 'createLoan'])
-        ->name('pegawai.loans.create');
-
- 
-
-});
-
-
-
 
 Route::prefix('mahasiswa')
     ->name('mahasiswa.')
-    ->middleware(['auth', 'role:mahasiswa']) // middleware opsional, sesuaikan
+    ->middleware(['auth', 'role:mahasiswa']) 
     ->group(function () {
         Route::get('/books', [BookController::class, 'index'])->name('books.index');
     });

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
- public function up()
+public function up()
 {
     Schema::create('books', function (Blueprint $table) {
         $table->id();
@@ -21,9 +21,11 @@ return new class extends Migration
         $table->string('status')->default('available');  
         $table->text('description')->nullable();
         $table->decimal('rating', 3, 2)->default(0);
+        $table->string('photo')->nullable(); 
         $table->timestamps();
     });
 }
+
 
 
 public function down()

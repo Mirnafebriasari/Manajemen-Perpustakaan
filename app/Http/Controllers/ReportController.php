@@ -10,7 +10,6 @@ class ReportController extends Controller
 {
     public function index()
     {
-        // Statistik sederhana
         $totalLoans = Loan::count();
         $loansThisMonth = Loan::whereMonth('created_at', now()->month)->count();
         $popularBooks = Book::withCount('loans')->orderBy('loans_count', 'desc')->limit(5)->get();
