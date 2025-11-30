@@ -65,7 +65,7 @@ Aplikasi Manajemen Perpustakaan Digital ini dirancang untuk mengelola koleksi bu
 
 ---
 
-### Langkah-Langkah
+### Langkah-Langkah Penggunaan 
 
 1.  **Clone Repositori:**
     ```bash
