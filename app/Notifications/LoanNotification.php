@@ -12,7 +12,7 @@ class LoanNotification extends Notification implements ShouldQueue
     use Queueable;
 
     protected $loan;
-    protected $type; // 'borrowed', 'returned', 'due_soon', 'fine'
+    protected $type; 
 
     public function __construct($loan, $type)
     {
@@ -22,7 +22,7 @@ class LoanNotification extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return ['database', 'mail']; // Database untuk in-app, mail untuk email
+        return ['database', 'mail']; 
     }
 
     public function toMail($notifiable)
@@ -32,7 +32,7 @@ class LoanNotification extends Notification implements ShouldQueue
         'returned' => 'Buku "' . $this->loan->book->title . '" telah dikembalikan.',
         'due_soon' => 'Pengingat: Buku "' . $this->loan->book->title . '" jatuh tempo dalam 2 hari.',
         'fine' => 'Denda baru: Rp' . number_format($this->loan->fine_amount) . ' untuk buku "' . $this->loan->book->title . '".',
-        default => 'Notifikasi peminjaman buku.', // fallback
+        default => 'Notifikasi peminjaman buku.', 
     };
 
     return (new MailMessage)

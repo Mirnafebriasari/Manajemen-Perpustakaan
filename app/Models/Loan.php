@@ -37,9 +37,36 @@ class Loan extends Model
         return $this->status === 'borrowed' && now()->greaterThan($this->due_date);
     }
 
-    // Tambahkan accessor untuk is_extended jika diperlukan (asumsi ada field 'is_extended' di database)
     public function getIsExtendedAttribute()
     {
-        return $this->attributes['is_extended'] ?? false;  // Jika ada field di DB, atau logika lain
+        return $this->attributes['is_extended'] ?? false; 
     }
+
+    public function extendForPegawai(Request $request, Loan $loan)
+{
+    $user = auth()->user();
+
+    // Hanya admin & pegawai yang boleh extend lewat sini
+    if (!$user->hasAnyRole(['admin', 'pegawai'])) {
+        return redirect()->back()->withErrors('Akses ditolak.');
+    }
+
+    // Cek apakah buku sudah dikembalikan
+    if ($loan->return_date !== null) {
+        return redirect()->back()->with('error', 'Loan sudah dikembalikan.');
+    }
+
+    // Cek apakah sudah diperpanjang sebelumnya
+    if ($loan->is_extended) {
+        return redirect()->back()->with('error', 'Peminjaman sudah pernah diperpanjang.');
+    }
+
+    // Lakukan perpanjangan
+    $loan->due_date = $loan->due_date->addDays(7); 
+    $loan->is_extended = true;
+    $loan->save();
+
+    return redirect()->back()->with('success', 'Peminjaman berhasil diperpanjang oleh pegawai.');
+}
+
 }

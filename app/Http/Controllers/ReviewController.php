@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Book;
 
 class ReviewController extends Controller
 {
@@ -12,7 +13,6 @@ class ReviewController extends Controller
 {
     $loan = \App\Models\Loan::findOrFail($loanId);
     
-    // Cek apakah user yang login adalah peminjam buku ini
     if ($loan->user_id !== auth()->id()) {
         abort(403, 'Unauthorized');
     }
@@ -22,7 +22,7 @@ class ReviewController extends Controller
     return view('reviews.create', compact('loan', 'book'));
 }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $request->validate([
             'book_id' => 'required|exists:books,id',
@@ -30,11 +30,17 @@ class ReviewController extends Controller
             'comment' => 'nullable|string',
         ]);
 
+
         Review::updateOrCreate(
             ['user_id' => Auth::id(), 'book_id' => $request->book_id],
             ['rating' => $request->rating, 'comment' => $request->comment]
         );
 
-        return back()->with('success', 'Ulasan berhasil disimpan');
+        $avgRating = Review::where('book_id', $request->book_id)->avg('rating');
+
+        Book::where('id', $request->book_id)
+            ->update(['rating' => $avgRating]);
+
+        return back()->with('success', 'Ulasan dan rating berhasil disimpan.');
     }
 }

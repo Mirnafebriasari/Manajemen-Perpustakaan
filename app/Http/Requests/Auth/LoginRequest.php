@@ -31,12 +31,14 @@ class LoginRequest extends FormRequest
             'password' => ['required', 'string'],
         ];
     }
-
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'Email tidak boleh kosong.',
+            'email.email' => 'Format email tidak valid.',
+            'password.required' => 'Kata sandi wajib diisi.',
+        ];
+    }
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
@@ -44,9 +46,10 @@ class LoginRequest extends FormRequest
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                throw ValidationException::withMessages([
+                'email' => 'Email atau kata sandi salah.',
             ]);
+
         }
 
         RateLimiter::clear($this->throttleKey());

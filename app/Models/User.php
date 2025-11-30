@@ -23,13 +23,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    // Relasi ke Loan (peminjaman)
     public function loans()
     {
         return $this->hasMany(Loan::class);
     }
-
-    // Relasi ke Review
+    
     public function reviews()
     {
         return $this->hasMany(Review::class);

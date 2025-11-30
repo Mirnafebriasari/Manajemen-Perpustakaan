@@ -12,7 +12,6 @@ public function index(Request $request)
 {
     $query = Book::query();
 
-    // Search judul / penulis
     if ($request->search) {
         $query->where(function($q) use ($request) {
             $q->where('title', 'like', '%'.$request->search.'%')
@@ -20,12 +19,10 @@ public function index(Request $request)
         });
     }
 
-    // Filter kategori
     if ($request->category) {
         $query->where('category', $request->category);
     }
 
-    // Sorting berdasarkan kolom yang diijinkan
     $allowedSorts = ['title', 'author', 'publication_year', 'rating', 'created_at'];
     $sort = $request->sort;
     if ($sort && in_array($sort, $allowedSorts)) {
@@ -35,20 +32,24 @@ public function index(Request $request)
     }
 
     $books = $query->paginate(10);
-
-    // Untuk filter kategori dropdown
     $categories = Book::select('category')->distinct()->pluck('category');
-
     return view('books.index', compact('books', 'categories'));
 }
 
-    // Form create buku
-    public function create()
-    {
-        return view('books.create');
+  public function create()
+{
+    $user = auth()->user();
+
+    if ($user->hasRole('admin')) {
+        $formAction = route('admin.books.store');
+    } elseif ($user->hasRole('pegawai')) {
+        $formAction = route('pegawai.books.store');
+    } else {
+        abort(403);
     }
 
-    // Simpan buku baru
+    return view('books.create', compact('formAction'));
+}
     public function store(Request $request)
     {
         $request->validate([
@@ -64,51 +65,77 @@ public function index(Request $request)
         ]);
 
         Book::create($request->all());
-
         return redirect()->route('books.index')->with('success', 'Buku berhasil ditambahkan');
     }
 
-    // Form edit buku
     public function edit(Book $book)
     {
         return view('books.edit', compact('book'));
     }
 
-    // Update buku
-    public function update(Request $request, Book $book)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'author' => 'required|string|max:255',
-            'publisher' => 'required|string|max:255',
-            'publication_year' => 'required|digits:4|integer',
-            'category' => 'required|string|max:255',
-            'stock' => 'required|integer|min:0',
-            'max_loan_days' => 'required|integer|min:1',
-            'fine_per_day' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-        ]);
+  public function update(Request $request, Book $book)
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'author' => 'required|string|max:255',
+        'publisher' => 'required|string|max:255',
+        'publication_year' => 'required|digits:4|integer',
+        'category' => 'required|string|max:255',
+        'stock' => 'required|integer|min:0',
+        'max_loan_days' => 'required|integer|min:1',
+        'fine_per_day' => 'required|numeric|min:0',
+        'description' => 'nullable|string',
+    ]);
 
-        $book->update($request->all());
+    $oldStock = $book->stock;
 
-        return redirect()->route('books.index')->with('success', 'Buku berhasil diupdate');
+    $book->update($request->all());
+
+    \Log::info('Update Book', [
+        'book_id' => $book->id,
+        'old_stock' => $oldStock,
+        'new_stock' => $book->stock,
+        'increase' => $book->stock - $oldStock
+    ]);
+
+    if ($book->stock > $oldStock) {
+        $stockIncrease = $book->stock - $oldStock;
+        
+        \Log::info('Processing reservations', ['count' => $stockIncrease]);
+        
+        for ($i = 0; $i < $stockIncrease; $i++) {
+            $book->refresh();
+            
+            if ($book->stock > 0) {
+                \Log::info('Calling processReservation', ['iteration' => $i + 1, 'current_stock' => $book->stock]);
+                
+                $result = app(\App\Http\Controllers\ReservationController::class)
+                    ->processReservation($book);
+                
+                \Log::info('processReservation result', ['result' => $result ? 'processed' : 'no reservation']);
+            } else {
+                \Log::info('Stock depleted, stopping');
+                break;
+            }
+        }
     }
+
+    return redirect()->route('books.index')->with('success', 'Buku berhasil diupdate dan reservasi diproses');
+}
 
 public function show($id)
 {
-    $book = Book::findOrFail($id);
+    $book = Book::withCount(['loans as loans_active_count' => function ($query) {
+        $query->whereNull('returned_at'); // sesuaikan kolom untuk status peminjaman aktif
+    }])->findOrFail($id);
 
-    // Ambil review terkait buku
+    $stokAwal = $book->stock;
+    $stokDipinjam = $book->loans_active_count;
+    $stokSaatIni = $stokAwal - $stokDipinjam;
+
     $reviews = $book->reviews()->with('user')->latest()->get();
 
-    return view('books.show', compact('book', 'reviews'));
+    return view('books.show', compact('book', 'reviews', 'stokAwal', 'stokDipinjam', 'stokSaatIni'));
 }
 
-
-    // Hapus buku
-    public function destroy(Book $book)
-    {
-        $book->delete();
-        return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus');
-    }
 }

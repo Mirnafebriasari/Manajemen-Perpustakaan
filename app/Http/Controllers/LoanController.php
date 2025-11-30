@@ -10,14 +10,11 @@ use App\Notifications\LoanNotification;
 
 class LoanController extends Controller
 {
-    // Mahasiswa: lihat daftar pinjaman (tapi admin/pegawai juga butuh list semua)
     public function index()
     {
-        // Jika admin atau pegawai -> tampilkan semua peminjaman (dengan pagination)
         if (auth()->user()->hasAnyRole(['admin', 'pegawai'])) {
             $loans = Loan::with(['user', 'book'])->latest()->paginate(15);
         } else {
-            // Mahasiswa -> hanya pinjaman miliknya sendiri
             $loans = Loan::where('user_id', Auth::id())->with('book')->latest()->paginate(10);
         }
 
@@ -56,7 +53,6 @@ public function store(Request $request)
 
     $book->decrement('stock', $request->quantity);
 
-    // Kirim notifikasi sekali saja (atau bisa per loan, sesuai kebutuhan)
     foreach ($loans as $loan) {
         $loan->user->notify(new LoanNotification($loan, 'borrowed'));
     }
@@ -71,40 +67,37 @@ public function store(Request $request)
     }
 }
 
-    // Pegawai/Administrator menandai pengembalian
-    public function update(Request $request, Loan $loan)
-    {
-        // Pastikan hanya yang berstatus 'borrowed' bisa diproses
-        if ($loan->status !== 'borrowed') {
-            return back()->withErrors('Peminjaman sudah selesai atau dibatalkan');
-        }
-
-        $loan->return_date = now();
-
-        // Jika sekarang lewat due_date, maka terlambat
-        if (now()->greaterThan($loan->due_date)) {
-            $daysLate = now()->diffInDays($loan->due_date);
-            $loan->fine_amount = $daysLate * ($loan->book->fine_per_day ?? 0);
-            $loan->status = 'late';
-        } else {
-            $loan->fine_amount = 0;
-            $loan->status = 'returned';
-        }
-
-        $loan->save();
-
-        if ($loan->status === 'returned') {
-            $loan->user->notify(new LoanNotification($loan, 'returned'));
-        } elseif ($loan->status === 'late') {
-            $loan->user->notify(new LoanNotification($loan, 'fine'));
-        }
-
-        $loan->book->increment('stock');
-
-        return redirect()->back()->with('success', 'Pengembalian buku berhasil diproses');
+   public function update(Request $request, Loan $loan)
+{
+    if ($loan->status !== 'borrowed') {
+        return back()->withErrors('Peminjaman sudah selesai atau dibatalkan');
     }
 
-    // Perpanjangan oleh mahasiswa (renew)
+    $loan->return_date = now();
+
+    if (now()->greaterThan($loan->due_date)) {
+        $daysLate = now()->diffInDays($loan->due_date);
+        $loan->fine_amount = $daysLate * ($loan->book->fine_per_day ?? 0);
+        $loan->status = 'late';
+    } else {
+        $loan->fine_amount = 0;
+        $loan->status = 'returned';
+    }
+
+    $loan->save();
+
+    if ($loan->status === 'returned') {
+        $loan->user->notify(new LoanNotification($loan, 'returned'));
+    } elseif ($loan->status === 'late') {
+        $loan->user->notify(new LoanNotification($loan, 'fine'));
+    }
+
+    $loan->book->increment('stock');
+    app(\App\Http\Controllers\ReservationController::class)->processReservation($loan->book);
+    return redirect()->back()->with('success', 'Pengembalian buku berhasil diproses');
+}
+
+
     public function renew(Request $request, Loan $loan)
     {
         if ($loan->user_id !== Auth::id()) {
@@ -115,31 +108,25 @@ public function store(Request $request)
             return back()->withErrors('Tidak bisa diperpanjang karena sudah terlambat atau dikembalikan.');
         }
 
-        // Perpanjang sesuai kebijakan buku
         $loan->due_date = $loan->due_date->addDays($loan->book->max_loan_days);
         $loan->save();
-
         $loan->user->notify(new LoanNotification($loan, 'renewed'));
-
         return back()->with('success', 'Peminjaman berhasil diperpanjang.');
     }
 
-    // Extend (jika kamu punya mekanisme extend terpisah)
     public function extend(Request $request, Loan $loan)
     {
-        // Jika extend hanya oleh pegawai/admin atau sesuai aturan, sesuaikan pengecekan
         if ($loan->return_date !== null) {
             return redirect()->back()->with('error', 'Loan sudah dikembalikan.');
         }
 
-        $loan->due_date = $loan->due_date->addDays(7); // sesuaikan kebijakan
-        $loan->is_extended = true; // pastikan kolom is_extended ada di db jika ingin disimpan
+        $loan->due_date = $loan->due_date->addDays(7); 
+        $loan->is_extended = true;
         $loan->save();
 
         return redirect()->back()->with('success', 'Loan berhasil diperpanjang.');
     }
 
-    // Pengirim reminder (bisa dipanggil via scheduler)
     public function sendDueReminders()
     {
         $loans = Loan::where('status', 'borrowed')
@@ -152,4 +139,39 @@ public function store(Request $request)
             $loan->user->notify(new LoanNotification($loan, 'due_soon'));
         }
     }
+
+    public function returnBook($id)
+{
+    $loan = Loan::findOrFail($id);
+    $book = $loan->book;
+
+
+    $loan->update([
+        'status' => 'returned',
+        'return_date' => now()
+    ]);
+
+    $book->increment('stock');
+    app(\App\Http\Controllers\ReservationController::class)->processReservation($book);
+    return back()->with('success', 'Buku berhasil dikembalikan.');
 }
+public function destroy(Loan $loan)
+{
+    $user = auth()->user();
+    if ($user->hasRole('admin') || $user->hasRole('pegawai')) {
+        $loan->delete();
+        return redirect()->back()->with('success', 'Riwayat peminjaman berhasil dihapus.');
+    } elseif ($user->hasRole('mahasiswa')) {
+        if ($loan->user_id === $user->id) {
+            $loan->delete();
+            return redirect()->back()->with('success', 'Riwayat peminjaman berhasil dihapus.');
+        } else {
+            return redirect()->back()->withErrors('Anda tidak berhak menghapus riwayat peminjaman ini.');
+        }
+    }
+
+    return redirect()->back()->withErrors('Akses ditolak.');
+}
+
+}
+

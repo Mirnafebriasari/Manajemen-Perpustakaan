@@ -10,23 +10,26 @@ use App\Models\Reservation;
 class MahasiswaController extends Controller
 {
     public function dashboard()
+    
     {
-        $user = Auth::user();
+     $user = Auth::user();
+     $user->notifications()
+        ->where('created_at', '<', now()->subDay())
+        ->delete();
 
-      $activeLoans = Loan::with('book')
-    ->where('user_id', $user->id)
-    ->whereNull('return_date')   // perbaikan
-    ->get();
+     $activeLoans = Loan::with('book')
+        ->where('user_id', $user->id)
+        ->whereNull('return_date')  
+        ->get();
 
-$loanHistory = Loan::with('book')
-    ->where('user_id', $user->id)
-    ->whereNotNull('return_date')   // perbaikan
-    ->orderBy('return_date', 'desc')  // perbaikan
-    ->get();
+    $loanHistory = Loan::with('book')
+         ->where('user_id', $user->id)
+         ->whereNotNull('return_date')  
+         ->orderBy('return_date', 'desc')  
+         ->get();
 
         $totalFine = $activeLoans->sum(fn($loan) => $loan->fine_amount ?? 0);
 
-        $notifications = $user->notifications()->latest()->get();
 
         $recommendations = Book::withCount('loans')
             ->orderBy('loans_count', 'desc')
@@ -38,6 +41,8 @@ $loanHistory = Loan::with('book')
             ->latest()
             ->limit(5)
             ->get();
+   
+        $notifications = auth()->user()->unreadNotifications ?? collect();
 
         return view('dashboard.mahasiswa', compact(
             'activeLoans',
@@ -48,5 +53,10 @@ $loanHistory = Loan::with('book')
             'reservations',
             'user'
         ));
+    }
+        public function markAllAsRead()
+    {
+        Auth::user()->unreadNotifications->markAsRead();
+        return back()->with('success', 'Semua notifikasi telah ditandai sebagai sudah dibaca.');
     }
 }

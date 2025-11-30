@@ -10,19 +10,15 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        // Buku Terbaru (5 terakhir)
         $latestBooks = Book::orderBy('created_at', 'desc')->limit(5)->get();
 
-        // Buku Populer (dipinjam minimal 50% dari stok)
         $popularBooks = Book::withCount('loans')
-            ->get()
-            ->filter(function ($book) {
-                return $book->stock > 0 && $book->loans_count >= 0.5 * $book->stock;
-            })
-            ->sortByDesc('loans_count')
-            ->take(5);
+    ->where('stock', '>', 0)
+    ->orderByDesc('loans_count')
+    ->limit(5)
+    ->get();
 
-        // Rekomendasi personal
+
         $personalizedRecommendations = collect();
         if (Auth::check() && Auth::user()->hasRole('mahasiswa')) {
             $userCategories = Auth::user()->loans()
@@ -61,7 +57,6 @@ class HomeController extends Controller
             }
         }
 
-        // Search
         $search = $request->input('search');
         $searchResults = collect();
         if ($search) {

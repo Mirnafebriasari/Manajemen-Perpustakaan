@@ -17,16 +17,15 @@ class Book extends Model
         'fine_per_day',
         'description',
         'status',
+         'rating',
     ];
     
 
-    // Relasi ke Loan
     public function loans()
     {
         return $this->hasMany(Loan::class);
     }
 
-    // Relasi ke Review
     public function reviews()
     {
         return $this->hasMany(Review::class);

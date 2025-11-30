@@ -3,71 +3,89 @@
 @section('title', 'Edit Profil')
 
 @section('content')
-<div class="max-w-2xl mx-auto bg-white p-6 shadow rounded">
-    
-    <h1 class="text-2xl font-bold mb-4">Edit Profil</h1>
+<div class="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex justify-center items-center py-10 px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-2xl">
 
-    {{-- Notifikasi sukses --}}
-    @if(session('status'))
-        <div class="mb-4 bg-green-100 text-green-700 p-2 rounded">
-            {{ session('status') }}
-        </div>
-    @endif
+        <h1 class="text-3xl font-bold text-orange-600 mb-6 text-center">
+            Edit Profil
+        </h1>
 
-    <form method="POST" action="{{ route('profile.update') }}">
-        @csrf
-        @method('PATCH')
+        <form method="POST" action="{{ route('profile.update') }}" class="space-y-6">
+            @csrf
+            @method('PATCH')
 
-        {{-- Nama --}}
-        <div class="mb-4">
-            <label class="block font-semibold mb-1">Nama Lengkap</label>
-            <input 
-                type="text" 
-                name="name" 
-                value="{{ old('name', auth()->user()->name) }}" 
-                class="border p-2 w-full rounded"
+            {{-- Nama Lengkap --}}
+            <div>
+                <label for="name" class="block text-gray-700 font-semibold mb-2">
+                    Nama Lengkap
+                </label>
+                <input 
+                    id="name"
+                    type="text" 
+                    name="name" 
+                    value="{{ old('name', auth()->user()->name) }}" 
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm 
+                           focus:ring-2 focus:ring-orange-400 focus:outline-none transition"
+                >
+                @error('name')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Email --}}
+            <div>
+                <label for="email" class="block text-gray-700 font-semibold mb-2">
+                    Email
+                </label>
+                <input 
+                    id="email"
+                    type="email" 
+                    name="email" 
+                    value="{{ old('email', auth()->user()->email) }}" 
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm 
+                           focus:ring-2 focus:ring-orange-400 focus:outline-none transition"
+                >
+                @error('email')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Password Saat Ini --}}
+            <div>
+                <label for="current_password" class="block text-gray-700 font-semibold mb-2">
+                    Password Saat Ini
+                </label>
+                <input 
+                    id="current_password"
+                    type="password" 
+                    name="current_password" 
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm 
+                           focus:ring-2 focus:ring-orange-400 focus:outline-none transition"
+                    required
+                >
+                @error('current_password')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Tombol Simpan --}}
+            <button 
+                type="submit" 
+                class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl shadow-md transition duration-200"
             >
-            @error('name')
-            <p class="text-red-600 text-sm">{{ $message }}</p>
-            @enderror
+                Simpan Perubahan
+            </button>
+        </form>
+
+        {{-- Tombol Kembali di bawah tombol simpan --}}
+        <div class="mt-6 flex justify-center">
+            <a href="{{ url()->previous() }}" 
+               class="inline-block px-6 py-3 border border-orange-500 text-orange-600 font-semibold rounded-xl 
+                      hover:bg-orange-50 transition duration-200 shadow-sm">
+                ← Kembali
+            </a>
         </div>
 
-        {{-- Email --}}
-        <div class="mb-4">
-            <label class="block font-semibold mb-1">Email</label>
-            <input 
-                type="email" 
-                name="email" 
-                value="{{ old('email', auth()->user()->email) }}" 
-                class="border p-2 w-full rounded"
-            >
-            @error('email')
-            <p class="text-red-600 text-sm">{{ $message }}</p>
-            @enderror
-        </div>
-
-        {{-- Password saat ini (konfirmasi) --}}
-        <div class="mb-4">
-            <label class="block font-semibold mb-1">Password Saat Ini</label>
-            <input 
-                type="password" 
-                name="current_password" 
-                class="border p-2 w-full rounded"
-                required
-            >
-            @error('current_password')
-            <p class="text-red-600 text-sm">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <button 
-            type="submit" 
-            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-            Simpan Perubahan
-        </button>
-
-    </form>
-
+    </div>
 </div>
 @endsection

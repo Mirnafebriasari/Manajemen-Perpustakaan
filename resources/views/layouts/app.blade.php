@@ -42,35 +42,64 @@
                             </svg>
                         </button>
                         
-                        {{-- Dropdown Menu --}}
-                        <div class="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                            <div class="px-4 py-3 border-b border-gray-200">
-                                <p class="text-sm text-gray-500">Signed in as</p>
-                                <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->email }}</p>
-                                <p class="text-xs text-gray-500 mt-1">
-                                    Role: <span class="font-medium">{{ auth()->user()->getRoleNames()->first() ?? 'No Role' }}</span>
-                                </p>
-                            </div>
-                            
-                            <a href="{{ route('dashboard') }}" 
-                               class="flex items-center gap-2 px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                                </svg>
-                                Dashboard
-                            </a>
-                            
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" 
-                                        class="flex items-center gap-2 w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-b-lg transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                    </svg>
-                                    Logout
-                                </button>
-                            </form>
-                        </div>
+{{-- Dropdown Menu --}}
+<div class="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+    <div class="px-4 py-3 border-b border-gray-200">
+        <p class="text-sm text-gray-500">Signed in as</p>
+        <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->email }}</p>
+        <p class="text-xs text-gray-500 mt-1">
+            Role: <span class="font-medium">{{ auth()->user()->getRoleNames()->first() ?? 'No Role' }}</span>
+        </p>
+    </div>
+
+    <a href="{{ route('dashboard') }}" 
+       class="flex items-center gap-2 px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+        Dashboard
+    </a>
+
+    <!-- Tambahan Menu Pengaturan -->
+    <a href="{{ route('profile.edit') }}"
+       class="flex items-center gap-2 px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Edit Profil
+    </a>
+
+    <a href="{{ route('password.change') }}"
+       class="flex items-center gap-2 px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.38 1.12-2.5 2.5-2.5S17 9.62 17 11v1h-5v-1z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 11v-1a5 5 0 00-10 0v1"></path>
+        </svg>
+        Ganti Password
+    </a>
+
+    <form method="POST" action="{{ route('account.delete') }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun ini? Semua data akan hilang.')">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="flex items-center gap-2 w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-b-lg transition-colors">
+        <!-- ikon -->
+        Hapus Akun
+    </button>
+</form>
+
+
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" 
+                class="flex items-center gap-2 w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-b-lg transition-colors mt-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+            </svg>
+            Logout
+        </button>
+    </form>
+</div>
+
                     </div>
                 @else
                     <a href="{{ route('login') }}" 
@@ -78,7 +107,7 @@
                         Login
                     </a>
                     <a href="{{ route('register') }}" 
-                       class="px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-black font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg">
+                       class="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-500 text-black font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg">
                         Register
                     </a>
                 @endauth
@@ -134,9 +163,42 @@
 </header>
 
 {{-- Main Content with padding-top to account for fixed navbar --}}
-<main class="pt-20 container mx-auto px-4 mb-10">
+<main class="pt-24 container mx-auto px-4 mb-10">
+
+    {{-- Global Alert Notifications --}}
+@if(session('success'))
+    <div class="alert-box mb-6 p-4 bg-green-100 border border-green-300 text-green-700 rounded-lg shadow-lg animate-fadeIn">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert-box mb-6 p-4 bg-red-100 border border-red-300 text-red-700 rounded-lg shadow-lg animate-fadeIn">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(session('status'))
+    <div class="alert-box mb-6 p-4 bg-blue-100 border border-blue-300 text-blue-700 rounded-lg shadow-lg animate-fadeIn">
+        {{ session('status') }}
+    </div>
+@endif
+
+@if (!request()->routeIs('login') && $errors->any())
+    <div class="alert-box mb-6 p-4 bg-red-100 border border-red-300 text-red-700 rounded-lg shadow-lg animate-fadeIn">
+        <ul class="list-disc ml-4">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
+
     @yield('content')
 </main>
+
 
 {{-- Footer --}}
 <footer class="relative z-10 bg-gray-900/90 backdrop-blur-md text-white text-center py-6 mt-auto border-t border-white/10">
@@ -151,6 +213,15 @@ function toggleMobileMenu() {
     const menu = document.getElementById('mobileMenu');
     menu.classList.toggle('hidden');
 }
+</script>
+<script>
+    setTimeout(function () {
+        document.querySelectorAll('.alert-box').forEach(function(el){
+            el.style.opacity = '0';
+            el.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => el.remove(), 500);
+        });
+    }, 3000);
 </script>
 
 </body>

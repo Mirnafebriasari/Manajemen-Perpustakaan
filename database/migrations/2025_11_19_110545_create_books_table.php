@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
  public function up()
 {
     Schema::create('books', function (Blueprint $table) {
@@ -23,8 +18,9 @@ return new class extends Migration
         $table->integer('stock')->default(0);
         $table->integer('max_loan_days');
         $table->decimal('fine_per_day', 8, 2);
-        $table->string('status')->default('available');  // Tambahkan ini
+        $table->string('status')->default('available');  
         $table->text('description')->nullable();
+        $table->decimal('rating', 3, 2)->default(0);
         $table->timestamps();
     });
 }

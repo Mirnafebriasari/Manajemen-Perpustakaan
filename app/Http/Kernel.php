@@ -70,6 +70,6 @@ class Kernel extends HttpKernel
 {
     $schedule->call(function () {
         app(LoanController::class)->sendDueReminders();
-    })->dailyAt('09:00'); // Kirim pengingat harian pukul 9 pagi
+    })->dailyAt('09:00'); 
 }
 }
