@@ -81,6 +81,18 @@ Aplikasi Manajemen Perpustakaan Digital ini dirancang untuk mengelola koleksi bu
     ```bash
     composer install
     ```
+3.  **ketik "kode ." lalu masuk ke .env dan ubah bagian DB_DATABASE seperti berikut :**
+    ```bash
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=perpustakaan_db
+    DB_USERNAME=root
+    DB_PASSWORD=
+
+    ```
+    Jika nama filenya hanya ada .env.example maka ubah dulu menjadi .env lalu ubah isinya bagian DB_DATABASE seperti di atas.
+
 
 4.  **Buka XAMPP lalu start MySQL**
 5.  **Masuk ke VS Code lalu buka terminal dan jalankan migrasi dan seeder database:**
@@ -91,11 +103,19 @@ Aplikasi Manajemen Perpustakaan Digital ini dirancang untuk mengelola koleksi bu
     ```bash
     php artisan serve
     ```
-7. **Jalankan Vite pada terminal lain:**
+7. **Install dependensi npm:**
+    ```bash
+    npm install
+    ```   
+8. **Jalankan Vite pada terminal lain:**
     ```bash
     npm run dev
     ```
-8. **Jalankan symlink untuk menghubungkan folder penyimpanan file pribadi ke folder yang dapat diakses publik oleh browser. :**
+8. **Jalankan perintah ini di root folder proyek Laravel fungsinya untuk membuat dan menaruh APP_KEY baru ke dalam file .env.:**
+    ```bash
+    php artisan key:generate
+    ```
+9. **Jalankan symlink untuk menghubungkan folder penyimpanan file pribadi ke folder yang dapat diakses publik oleh browser. :**
     ```bash
     php artisan storage:link
     ```
