@@ -95,6 +95,10 @@ Aplikasi Manajemen Perpustakaan Digital ini dirancang untuk mengelola koleksi bu
     ```bash
     npm run dev
     ```
+8. **Jalankan symlink untuk menghubungkan folder penyimpanan file pribadi ke folder yang dapat diakses publik oleh browser. :**
+    ```bash
+    php artisan storage:link
+    ```
     *Akses aplikasi di:* `http://127.0.0.1:8000/`
 
 **Catatan Penting Mengenai Akses**
@@ -105,7 +109,7 @@ Setelah menjalankan perintah php artisan migrate --seed, Anda dapat mengakses si
 
 ---
 
-## 🧑‍💻 Alur Penggunaan Berdasarkan Role
+## Alur Penggunaan Berdasarkan Role
 
 | Role | Fungsionalitas Utama |
 | :--- | :--- |
